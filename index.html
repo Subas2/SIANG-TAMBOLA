@@ -1117,15 +1117,55 @@
     <div class="profile-overlay" id="profile-overlay" onclick="closeProfile(event)">
         <div class="profile-sheet">
             <div class="ps-handle"></div>
-            <div class="ps-avatar">👤</div>
-            <div class="ps-name">Elite Player</div>
-            <div class="ps-sub">Player ID: ST-00123 · Guest Member</div>
-            <div class="ps-rows">
-                <div class="ps-row">
-                    <div class="ps-row-icon">👤</div>
-                    <div class="ps-row-label">My Profile</div>
-                    <div class="ps-row-arrow">›</div>
+
+            <!-- Photo Upload -->
+            <div style="text-align:center; padding: 0 20px 0;">
+                <div style="position:relative; width:84px; margin: 0 auto 10px;"
+                    onclick="document.getElementById('photo-input').click()">
+                    <div id="ps-photo-wrap"
+                        style="width:84px;height:84px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 0 25px rgba(139,92,246,0.4);overflow:hidden;cursor:pointer;">
+                        <span id="ps-emoji">👤</span>
+                        <img id="ps-photo-img" style="display:none;width:100%;height:100%;object-fit:cover;" />
+                    </div>
+                    <div
+                        style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;border:2px solid var(--bg);">
+                        📷</div>
                 </div>
+                <input type="file" id="photo-input" accept="image/*" style="display:none;"
+                    onchange="handlePhoto(event)">
+
+                <!-- View Mode -->
+                <div id="ps-view">
+                    <div style="font-size:1.1rem;font-weight:900;margin-bottom:2px;" id="ps-display-name">Elite Player
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Player ID: ST-00123 · Guest
+                        Member</div>
+                    <button onclick="psEdit(true)"
+                        style="padding:7px 22px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.35);border-radius:20px;color:var(--neon);font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;">✏️
+                        Edit Profile</button>
+                </div>
+
+                <!-- Edit Mode -->
+                <div id="ps-edit" style="display:none;margin-top:4px;">
+                    <input id="ed-name" type="text" placeholder="Full name" value="Elite Player"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(139,92,246,0.35);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:7px;">
+                    <input id="ed-phone" type="tel" placeholder="📱 Phone number"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(139,92,246,0.35);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:7px;">
+                    <input id="ed-email" type="email" placeholder="✉️ Email address"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(139,92,246,0.35);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:9px;">
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="psSave()"
+                            style="flex:1;padding:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;font-size:0.9rem;">💾
+                            Save</button>
+                        <button onclick="psEdit(false)"
+                            style="padding:11px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;font-size:0.9rem;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:14px 0;"></div>
+
+            <div class="ps-rows" style="max-height:180px;overflow-y:auto;">
                 <div class="ps-row">
                     <div class="ps-row-icon">🎫</div>
                     <div class="ps-row-label">My Tickets</div>
@@ -1143,7 +1183,7 @@
                 </div>
                 <div class="ps-row">
                     <div class="ps-row-icon">🆘</div>
-                    <div class="ps-row-label">Help & Support</div>
+                    <div class="ps-row-label">Help &amp; Support</div>
                     <div class="ps-row-arrow">›</div>
                 </div>
             </div>
@@ -1153,7 +1193,10 @@
 
     <script>
         window.openProfile = function () { document.getElementById('profile-overlay').classList.add('open'); };
-        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) document.getElementById('profile-overlay').classList.remove('open'); };
+        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) { document.getElementById('profile-overlay').classList.remove('open'); psEdit(false); } };
+        window.psEdit = function (on) { document.getElementById('ps-view').style.display = on ? 'none' : 'block'; document.getElementById('ps-edit').style.display = on ? 'block' : 'none'; };
+        window.psSave = function () { const n = document.getElementById('ed-name').value.trim() || 'Elite Player'; document.getElementById('ps-display-name').textContent = n; psEdit(false); alert('✅ Profile updated!'); };
+        window.handlePhoto = function (e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { document.getElementById('ps-emoji').style.display = 'none'; const i = document.getElementById('ps-photo-img'); i.src = ev.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); };
     </script>
 </body>
 

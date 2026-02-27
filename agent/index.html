@@ -1291,10 +1291,53 @@
     <div class="profile-overlay" id="profile-overlay" onclick="closeProfile(event)">
         <div class="profile-sheet">
             <div class="ps-handle"></div>
-            <div class="ps-avatar">🤝</div>
-            <div class="ps-name">Agent Rahul</div>
-            <div class="ps-sub">ID: AGT-ST-0042 · Elite Agent 🏆 · 8% Commission</div>
-            <div class="ps-rows">
+
+            <!-- Photo Upload -->
+            <div style="text-align:center;padding:0 20px;">
+                <div style="position:relative;width:84px;margin:0 auto 10px;"
+                    onclick="document.getElementById('ag-photo-input').click()">
+                    <div id="ag-photo-wrap"
+                        style="width:84px;height:84px;background:linear-gradient(135deg,var(--ag),var(--neon));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 0 25px rgba(245,158,11,0.4);overflow:hidden;cursor:pointer;">
+                        <span id="ag-emoji">🤝</span>
+                        <img id="ag-photo-img" style="display:none;width:100%;height:100%;object-fit:cover;" />
+                    </div>
+                    <div
+                        style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--ag);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;border:2px solid var(--bg);">
+                        📷</div>
+                </div>
+                <input type="file" id="ag-photo-input" accept="image/*" style="display:none;"
+                    onchange="agHandlePhoto(event)">
+
+                <div id="ag-view">
+                    <div style="font-size:1.1rem;font-weight:900;" id="ag-display-name">Agent Rahul</div>
+                    <div style="font-size:0.78rem;color:var(--muted);margin:4px 0 4px;">ID: AGT-ST-0042 · Elite Agent 🏆
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--ag);font-weight:700;margin-bottom:12px;">Commission: 8%
+                    </div>
+                    <button onclick="agEdit(true)"
+                        style="padding:7px 22px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);border-radius:20px;color:var(--ag);font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;">✏️
+                        Edit Profile</button>
+                </div>
+                <div id="ag-edit" style="display:none;margin-top:4px;">
+                    <input id="ag-ed-name" type="text" value="Agent Rahul" placeholder="Your name"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:7px;">
+                    <input id="ag-ed-phone" type="tel" placeholder="📱 Phone number"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:7px;">
+                    <input id="ag-ed-upi" type="text" placeholder="💳 UPI ID (e.g. rahul@upi)"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:9px;">
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="agSave()"
+                            style="flex:1;padding:11px;background:linear-gradient(135deg,var(--ag),#d97706);border:none;border-radius:10px;color:#000;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;">💾
+                            Save</button>
+                        <button onclick="agEdit(false)"
+                            style="padding:11px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:14px 0;"></div>
+
+            <div class="ps-rows" style="max-height:180px;overflow-y:auto;">
                 <div class="ps-row">
                     <div class="ps-row-icon">💰</div>
                     <div class="ps-row-label">Commission Balance – ₹12,800</div>
@@ -1311,11 +1354,6 @@
                     <div class="ps-row-arrow">›</div>
                 </div>
                 <div class="ps-row">
-                    <div class="ps-row-icon">⚙️</div>
-                    <div class="ps-row-label">Account Settings</div>
-                    <div class="ps-row-arrow">›</div>
-                </div>
-                <div class="ps-row">
                     <div class="ps-row-icon">🏦</div>
                     <div class="ps-row-label">Bank / UPI Details</div>
                     <div class="ps-row-arrow">›</div>
@@ -1327,7 +1365,10 @@
 
     <script>
         window.openProfile = function () { document.getElementById('profile-overlay').classList.add('open'); };
-        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) document.getElementById('profile-overlay').classList.remove('open'); };
+        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) { document.getElementById('profile-overlay').classList.remove('open'); agEdit(false); } };
+        window.agEdit = function (on) { document.getElementById('ag-view').style.display = on ? 'none' : 'block'; document.getElementById('ag-edit').style.display = on ? 'block' : 'none'; };
+        window.agSave = function () { const n = document.getElementById('ag-ed-name').value.trim() || 'Agent Rahul'; document.getElementById('ag-display-name').textContent = n; agEdit(false); alert('✅ Agent profile updated!'); };
+        window.agHandlePhoto = function (e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { document.getElementById('ag-emoji').style.display = 'none'; const i = document.getElementById('ag-photo-img'); i.src = ev.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); };
     </script>
 </body>
 

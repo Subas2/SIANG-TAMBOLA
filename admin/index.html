@@ -1616,28 +1616,64 @@
     <div class="profile-overlay" id="profile-overlay" onclick="closeProfile(event)">
         <div class="profile-sheet">
             <div class="ps-handle"></div>
-            <div class="ps-avatar">⚡</div>
-            <div class="ps-name">Super Admin</div>
-            <div class="ps-sub">ID: ADMIN-001 · God Level Access</div>
-            <div class="ps-rows">
-                <div class="ps-row">
-                    <div class="ps-row-icon">⚡</div>
-                    <div class="ps-row-label">God Panel Dashboard</div>
+
+            <!-- Photo Upload -->
+            <div style="text-align:center;padding:0 20px;">
+                <div style="position:relative;width:84px;margin:0 auto 10px;"
+                    onclick="document.getElementById('admin-photo-input').click()">
+                    <div id="adm-photo-wrap"
+                        style="width:84px;height:84px;background:linear-gradient(135deg,var(--a-red),#7c3aed);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 0 25px rgba(255,0,60,0.4);overflow:hidden;cursor:pointer;">
+                        <span id="adm-emoji">⚡</span>
+                        <img id="adm-photo-img" style="display:none;width:100%;height:100%;object-fit:cover;" />
+                    </div>
+                    <div
+                        style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--a-red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;border:2px solid var(--bg);">
+                        📷</div>
+                </div>
+                <input type="file" id="admin-photo-input" accept="image/*" style="display:none;"
+                    onchange="admHandlePhoto(event)">
+
+                <div id="adm-view">
+                    <div style="font-size:1.1rem;font-weight:900;" id="adm-display-name">Super Admin</div>
+                    <div style="font-size:0.78rem;color:var(--muted);margin:4px 0 12px;">ID: ADMIN-001 · God Level
+                        Access</div>
+                    <button onclick="admEdit(true)"
+                        style="padding:7px 22px;background:rgba(255,0,60,0.12);border:1px solid rgba(255,0,60,0.35);border-radius:20px;color:var(--a-red);font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;">✏️
+                        Edit Profile</button>
+                </div>
+                <div id="adm-edit" style="display:none;margin-top:4px;">
+                    <input id="adm-ed-name" type="text" value="Super Admin" placeholder="Admin name"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,0,60,0.3);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:7px;">
+                    <input id="adm-ed-phone" type="tel" placeholder="📱 Phone number"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,0,60,0.3);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:7px;">
+                    <input id="adm-ed-email" type="email" placeholder="✉️ Email address"
+                        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,0,60,0.3);border-radius:10px;padding:10px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:9px;">
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="admSave()"
+                            style="flex:1;padding:11px;background:linear-gradient(135deg,var(--a-red),#cc0030);border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;">💾
+                            Save</button>
+                        <button onclick="admEdit(false)"
+                            style="padding:11px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:14px 0;"></div>
+
+            <div class="ps-rows" style="max-height:160px;overflow-y:auto;">
+                <div class="ps-row" onclick="openCreateGame()">
+                    <div class="ps-row-icon">🎮</div>
+                    <div class="ps-row-label" style="color:var(--a-red);font-weight:900;">Create New Game</div>
                     <div class="ps-row-arrow">›</div>
                 </div>
                 <div class="ps-row">
                     <div class="ps-row-icon">🔑</div>
-                    <div class="ps-row-label">Change Admin Password</div>
+                    <div class="ps-row-label">Change Password</div>
                     <div class="ps-row-arrow">›</div>
                 </div>
                 <div class="ps-row">
                     <div class="ps-row-icon">🛡️</div>
                     <div class="ps-row-label">Security Settings</div>
-                    <div class="ps-row-arrow">›</div>
-                </div>
-                <div class="ps-row">
-                    <div class="ps-row-icon">📋</div>
-                    <div class="ps-row-label">View Audit Trail</div>
                     <div class="ps-row-arrow">›</div>
                 </div>
                 <div class="ps-row">
@@ -1650,9 +1686,81 @@
         </div>
     </div>
 
+    <!-- ===== CREATE GAME MODAL ===== -->
+    <div class="profile-overlay" id="game-overlay" onclick="closeCreateGame(event)">
+        <div class="profile-sheet" style="border-top-color:rgba(245,158,11,0.5);">
+            <div class="ps-handle"></div>
+            <div style="padding:0 20px 4px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:4px;">🎮</div>
+                <div style="font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:4px;">Create
+                    New Game</div>
+                <div style="font-size:0.8rem;color:var(--muted);margin-bottom:18px;">Configure and launch a new Tambola
+                    session</div>
+            </div>
+            <div style="padding:0 20px;">
+                <label
+                    style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:6px;">Game
+                    Room Name</label>
+                <input id="cg-name" type="text" placeholder="e.g. Evening Tambola #1"
+                    style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:11px 14px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:12px;">
+
+                <label
+                    style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:6px;">Ticket
+                    Price (₹)</label>
+                <input id="cg-price" type="number" placeholder="100" value="100"
+                    style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:11px 14px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:12px;">
+
+                <label
+                    style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:6px;">Draw
+                    Speed (seconds)</label>
+                <input id="cg-speed" type="number" placeholder="10" value="10" min="3" max="60"
+                    style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:11px 14px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9rem;outline:none;margin-bottom:12px;">
+
+                <label
+                    style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:8px;">Winning
+                    Patterns</label>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+                    <label
+                        style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.85rem;font-weight:600;"><input
+                            type="checkbox" checked style="accent-color:var(--a-red);"> Early 5</label>
+                    <label
+                        style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.85rem;font-weight:600;"><input
+                            type="checkbox" checked style="accent-color:var(--a-red);"> Top Row</label>
+                    <label
+                        style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.85rem;font-weight:600;"><input
+                            type="checkbox" checked style="accent-color:var(--a-red);"> Mid Row</label>
+                    <label
+                        style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.85rem;font-weight:600;"><input
+                            type="checkbox" checked style="accent-color:var(--a-red);"> Bot Row</label>
+                    <label
+                        style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.85rem;font-weight:600;"><input
+                            type="checkbox" checked style="accent-color:var(--a-red);"> Full House</label>
+                </div>
+
+                <button onclick="launchGame()"
+                    style="width:100%;padding:14px;background:linear-gradient(135deg,var(--a-red),#cc0030);border:none;border-radius:12px;color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;box-shadow:0 4px 25px rgba(255,0,60,0.4);letter-spacing:1px;margin-bottom:10px;">🚀
+                    Launch Game Room</button>
+                <button onclick="closeCreateGame(null)"
+                    style="width:100%;padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;margin-bottom:20px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         window.openProfile = function () { document.getElementById('profile-overlay').classList.add('open'); };
-        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) document.getElementById('profile-overlay').classList.remove('open'); };
+        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) { document.getElementById('profile-overlay').classList.remove('open'); admEdit(false); } };
+        window.admEdit = function (on) { document.getElementById('adm-view').style.display = on ? 'none' : 'block'; document.getElementById('adm-edit').style.display = on ? 'block' : 'none'; };
+        window.admSave = function () { const n = document.getElementById('adm-ed-name').value.trim() || 'Super Admin'; document.getElementById('adm-display-name').textContent = n; admEdit(false); alert('✅ Admin profile updated!'); };
+        window.admHandlePhoto = function (e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { document.getElementById('adm-emoji').style.display = 'none'; const i = document.getElementById('adm-photo-img'); i.src = ev.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); };
+        window.openCreateGame = function () { document.getElementById('profile-overlay').classList.remove('open'); setTimeout(() => document.getElementById('game-overlay').classList.add('open'), 100); };
+        window.closeCreateGame = function (e) { if (!e || e.target === document.getElementById('game-overlay')) document.getElementById('game-overlay').classList.remove('open'); };
+        window.launchGame = function () {
+            const name = document.getElementById('cg-name').value.trim() || 'Tambola Room 1';
+            const price = document.getElementById('cg-price').value || 100;
+            const speed = document.getElementById('cg-speed').value || 10;
+            closeCreateGame(null);
+            alert(`✅ Game "${name}" launched!\nTicket Price: ₹${price} | Draw every ${speed}s\nPlayers can now join!`);
+        };
     </script>
 </body>
 
