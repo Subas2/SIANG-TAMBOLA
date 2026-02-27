@@ -13,21 +13,156 @@
     <style>
         /* Admin Specific Overrides */
         body {
-            background-color: #050505;
+            background-color: #050508;
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 0, 60, 0.15), transparent 40%);
         }
 
         .admin-theme {
             --neon-primary: #ff003c;
-            /* Cyber Red dominant for Admin */
-            --shadow-glow: 0 0 15px rgba(255, 0, 60, 0.5);
-            --border-glass: rgba(255, 0, 60, 0.2);
+            --neon-primary-glow: #ff003c80;
+            --neon-secondary: #00f0ff;
+            --neon-gold: #ffd700;
+            --bg-glass: rgba(15, 10, 20, 0.6);
+            --border-glass: rgba(255, 0, 60, 0.3);
+            --shadow-glow: 0 8px 32px 0 rgba(255, 0, 60, 0.2);
         }
 
         .admin-header {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             border-bottom: 1px solid var(--border-glass);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            background: linear-gradient(180deg, rgba(255, 0, 60, 0.1) 0%, transparent 100%);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .admin-header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--neon-primary);
+        }
+
+        .admin-card {
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-glow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-primary), transparent);
+            opacity: 0.5;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px 0 rgba(255, 0, 60, 0.4);
+            border-color: rgba(255, 0, 60, 0.5);
+        }
+
+        .admin-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .admin-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glass);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 0, 60, 0.1);
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 15px var(--neon-primary-glow);
+            text-shadow: 0 0 10px white;
+        }
+
+        .admin-btn.action-btn {
+            background: linear-gradient(45deg, rgba(255, 0, 60, 0.8), rgba(200, 0, 40, 0.8));
+            border: none;
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+        }
+
+        .admin-btn.action-btn:hover {
+            background: linear-gradient(45deg, #ff003c, #ff3366);
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.8);
+            transform: scale(1.02);
+        }
+
+        .admin-btn.cyan-btn {
+            border-color: rgba(0, 240, 255, 0.4);
+            color: var(--neon-secondary);
+        }
+
+        .admin-btn.cyan-btn:hover {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--neon-secondary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            color: #fff;
+        }
+
+        .admin-btn.gold-btn {
+            border-color: rgba(255, 215, 0, 0.4);
+            color: var(--neon-gold);
+        }
+
+        .admin-btn.gold-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            color: #fff;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-box span {
+            color: #aaa;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px currentColor;
         }
     </style>
 </head>
@@ -77,43 +212,54 @@
                 <div class="admin-grid"
                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-                    <div class="admin-card glass-panel" style="padding: 20px;">
-                        <h3 style="margin-bottom: 20px; color: var(--neon-primary)">🎮 Game Engine</h3>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button class="btn btn-outline" id="btn-start-game"
-                                style="border-color: #00f0ff; color:#00f0ff">Start New Game Room</button>
-                            <button class="btn btn-primary" id="btn-draw-num"
-                                style="border-color: var(--neon-primary); color: var(--neon-primary)">Manual Number
-                                Draw</button>
-                            <button class="btn btn-secondary">Toggle AI Auto-Caller</button>
+                    <div class="admin-card glass-panel" style="padding: 25px;">
+                        <h3 style="color: var(--neon-primary)">🎮 Game Engine Core</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                            <button class="admin-btn cyan-btn" id="btn-start-game">
+                                ⚡ Initialize New Room
+                            </button>
+                            <button class="admin-btn action-btn" id="btn-draw-num">
+                                🎯 Execute Manual Draw
+                            </button>
+                            <button class="admin-btn">
+                                🤖 Engage AI Auto-Caller
+                            </button>
                         </div>
                     </div>
 
-                    <div class="admin-card glass-panel" style="padding: 20px;">
-                        <h3 style="margin-bottom: 20px; color: var(--neon-gold)">🏆 Pattern Builder</h3>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button class="btn btn-secondary">Edit Winning Patterns</button>
-                            <button class="btn btn-secondary">Set Prize Pool</button>
-                            <p class="subtitle" style="font-size:0.9rem; margin-top:10px;">Current: Early 5, Rows, Full
-                                House</p>
+                    <div class="admin-card glass-panel" style="padding: 25px;">
+                        <h3 style="color: var(--neon-gold)">🏆 Pattern constructor</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                            <button class="admin-btn gold-btn">⚙️ Edit Win Logic</button>
+                            <button class="admin-btn gold-btn">💰 Configure Prize Pool</button>
+                            <div
+                                style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 5px; border-left: 3px solid var(--neon-gold);">
+                                <p style="font-size: 0.85rem; color: #aaa; margin: 0;">Active Ruleset:</p>
+                                <p
+                                    style="font-family: 'Rajdhani', sans-serif; color: #fff; margin: 5px 0 0 0; font-size: 1.1rem; text-transform: uppercase;">
+                                    Early 5, Rows, Full House</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="admin-card glass-panel" style="padding: 20px;">
-                        <h3 style="margin-bottom: 20px; color: #bc13fe">🛡️ Monitoring & Logs</h3>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div class="stat-box"
-                                style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px; display:flex; justify-content:space-between;">
-                                <span>Active Players:</span> <strong style="color:#00f0ff">1,240</strong>
+                    <div class="admin-card glass-panel" style="padding: 25px;">
+                        <h3 style="color: #bc13fe">🛡️ Security & telemetry</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                            <div class="stat-box">
+                                <span>Active Connections</span>
+                                <span class="stat-value" style="color:#00f0ff">1,240</span>
                             </div>
-                            <div class="stat-box"
-                                style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px; display:flex; justify-content:space-between;">
-                                <span>Total Agents:</span> <strong style="color:#00f0ff">45</strong>
+                            <div class="stat-box">
+                                <span>Agent Nodes</span>
+                                <span class="stat-value" style="color:var(--neon-gold)">45</span>
                             </div>
-                            <button class="btn btn-secondary" style="margin-top: 10px;">View Transaction Logs</button>
-                            <button class="btn btn-secondary"
-                                style="border-color: var(--neon-primary); color: var(--neon-primary)">Ban Hammer /
-                                Player Management</button>
+                            <button class="admin-btn" style="border-color: #bc13fe; color: #bc13fe; margin-top: 5px;">
+                                📊 Network Logs
+                            </button>
+                            <button class="admin-btn"
+                                style="border-color: var(--neon-primary); color: var(--neon-primary);">
+                                🔨 Access Ban Hammer
+                            </button>
                         </div>
                     </div>
 
