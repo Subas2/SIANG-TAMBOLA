@@ -15,8 +15,8 @@ const app = {
     init() {
         console.log("🔥 SIANG TAMBOLA GOD LEVEL INITIALIZED!");
         this.bindEvents();
-        // For development, we skip auth for now and go to auth screen
-        this.showView('view-auth');
+        // Custom request: Players bypass login completely
+        this.loginDummy('guest');
     },
 
     bindEvents() {
