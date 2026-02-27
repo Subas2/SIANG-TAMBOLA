@@ -4,143 +4,1129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGENT PORTAL - SIANG TAMBOLA</title>
-    <!-- Google Fonts -->
+    <title>Agent Hub – Siang Tambola</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css">
     <style>
-        /* Agent Specific Overrides */
-        .agent-theme {
-            --neon-primary: #ffd700;
-            /* Gold dominant for Agents (Money) */
-            --shadow-glow: 0 0 15px rgba(255, 215, 0, 0.5);
-            --border-glass: rgba(255, 215, 0, 0.2);
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        .agent-header {
+        :root {
+            --bg: #0f0828;
+            --bg2: #150d38;
+            --card: #1e1248;
+            --card2: #251555;
+            --accent: #7c3aed;
+            --neon: #8b5cf6;
+            --cyan: #06b6d4;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --red: #ef4444;
+            --text: #e2d9f3;
+            --muted: #7c6fa0;
+            --border: rgba(124, 58, 237, 0.25);
+            /* Agent gold accent */
+            --ag: #f59e0b;
+            --ag-glow: rgba(245, 158, 11, 0.35);
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ag);
+            border-radius: 10px;
+        }
+
+        #app {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 481px) {
+            #app {
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* ---- LOGIN ---- */
+        .login-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 20px;
+            padding: 50px 36px;
+            box-shadow: 0 0 60px rgba(245, 158, 11, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--ag), var(--neon), var(--ag), transparent);
+        }
+
+        .lc-logo {
+            font-size: 1.6rem;
+            font-weight: 900;
             text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid var(--border-glass);
-            margin-bottom: 30px;
+            color: var(--ag);
+            text-shadow: 0 0 30px var(--ag);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
         }
 
-        .grid-blocks {
+        .lc-sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 36px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 7px;
+        }
+
+        .field input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 10px;
+            padding: 13px 16px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .field input:focus {
+            border-color: var(--ag);
+            background: rgba(245, 158, 11, 0.07);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+        }
+
+        .login-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--ag), #d97706);
+            color: #000;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 30px rgba(245, 158, 11, 0.4);
+            text-transform: uppercase;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 50px rgba(245, 158, 11, 0.6);
+        }
+
+        /* ---- HEADER ---- */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: var(--bg2);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-text {
+            font-size: 1.15rem;
+            font-weight: 900;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .agent-badge {
+            background: var(--ag);
+            color: #000;
+            font-size: 0.62rem;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            font-style: normal;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--ag);
+            border-color: var(--ag);
+        }
+
+        .logout-pill {
+            padding: 7px 16px;
+            background: transparent;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .logout-pill:hover {
+            border-color: var(--ag);
+            color: var(--ag);
+        }
+
+        /* ---- COMMISSION BANNER ---- */
+        .commission-banner {
+            background: linear-gradient(135deg, #92400e, #78350f);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cb-left .cb-lbl {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .cb-left .cb-val {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ag);
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        .withdraw-mini {
+            padding: 8px 18px;
+            background: var(--ag);
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .withdraw-mini:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        /* ---- TABS ---- */
+        .tab-bar {
+            display: flex;
+            background: var(--bg2);
+            padding: 6px 14px;
+            gap: 4px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            flex-shrink: 0;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .tab-item.active {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fff;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        /* ---- PAGES ---- */
+        .page {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            padding: 14px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ---- CARDS ---- */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .card.gold-top::before {
+            background: linear-gradient(90deg, transparent, var(--ag), transparent);
+        }
+
+        .card.cyan-top::before {
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        }
+
+        .card.green-top::before {
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
+        }
+
+        .card.purple-top::before {
+            background: linear-gradient(90deg, transparent, var(--neon), transparent);
+        }
+
+        /* ---- QUICK ACTIONS ---- */
+        .qa-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .qa-item {
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .qa-item:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .qa-icon {
+            font-size: 1.4rem;
+        }
+
+        .qa-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        /* ---- STAT ROWS ---- */
+        .stat-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sb-lbl {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sb-val {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        /* ---- BUTTONS ---- */
+        .g-btn {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 10px;
+            border: 1px solid;
+            background: transparent;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .g-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .g-btn.gold {
+            border-color: rgba(245, 158, 11, 0.4);
+            color: var(--ag);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .g-btn.gold:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--ag);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            color: #fff;
+        }
+
+        .g-btn.gold.fill {
+            background: linear-gradient(135deg, var(--ag), #d97706);
+            color: #000;
+            font-weight: 900;
+            border: none;
+            box-shadow: 0 3px 20px rgba(245, 158, 11, 0.35);
+        }
+
+        .g-btn.gold.fill:hover {
+            box-shadow: 0 3px 35px rgba(245, 158, 11, 0.55);
+            transform: translateY(-1px);
+        }
+
+        .g-btn.cyan {
+            border-color: rgba(6, 182, 212, 0.35);
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .g-btn.cyan:hover {
+            background: rgba(6, 182, 212, 0.12);
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            color: #fff;
+        }
+
+        .g-btn.green {
+            border-color: rgba(16, 185, 129, 0.35);
+            color: var(--green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .g-btn.green:hover {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: var(--green);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+            color: #fff;
+        }
+
+        .g-btn.ghost {
+            border-color: rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+        }
+
+        .g-btn.ghost:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ---- PLAYER ROWS ---- */
+        .player-item {
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .pi-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pi-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .pi-info .pi-name {
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .pi-info .pi-sub {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .pi-earnings {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--ag);
+            font-size: 0.9rem;
+        }
+
+        /* ---- TRANSACTION ROWS ---- */
+        .tx-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tx-item:last-child {
+            border-bottom: none;
+        }
+
+        .tx-desc {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .tx-date {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .tx-amount {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .tx-amount.positive {
+            color: var(--green);
+        }
+
+        .tx-amount.negative {
+            color: var(--red);
+        }
+
+        /* ---- REFERRAL CARD ---- */
+        .ref-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(124, 58, 237, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .ref-code {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--ag);
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+            margin: 10px 0;
+        }
+
+        .ref-sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        /* ---- PROGRESS BAR ---- */
+        .progress-wrap {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--ag), var(--green));
+            transition: width 0.5s ease;
+        }
+
+        /* ---- BOTTOM NAV ---- */
+        .bottom-nav {
+            display: flex;
+            background: var(--bg2);
+            border-top: 1px solid rgba(245, 158, 11, 0.15);
+            padding: 8px 0 4px;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .bnav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 5px 0;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .bnav-item .bi-icon {
+            font-size: 1.2rem;
+        }
+
+        .bnav-item .bi-label {
+            font-size: 0.6rem;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .bnav-item.active .bi-label {
+            color: var(--ag);
+        }
+
+        .bnav-item.active .bi-icon {
+            filter: drop-shadow(0 0 6px var(--ag));
+        }
+
+        .c-gold {
+            color: var(--ag);
+        }
+
+        .c-green {
+            color: var(--green);
+        }
+
+        .c-cyan {
+            color: var(--cyan);
+        }
+
+        .c-red {
+            color: var(--red);
+        }
+
+        .c-purple {
+            color: var(--neon);
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 
-<body class="theme-neon-cyber agent-theme">
+<body>
+    <div id="app">
 
-    <!-- Background Effects -->
-    <div class="background-effects">
-        <div class="grid-overlay"></div>
-        <div class="glow-orb orb-1" style="background: rgba(255, 215, 0, 0.1);"></div>
-        <div class="glow-orb orb-2" style="background: rgba(255, 215, 0, 0.15);"></div>
-    </div>
-
-    <div id="app-container">
-        <!-- VIEW: Agent Login -->
-        <section id="view-agent-auth" class="view active"
-            style="justify-content: center; align-items: center; display: flex; flex-grow: 1;">
-            <div class="auth-container glass-panel">
-                <h2 class="glow-text" style="color: var(--neon-primary)">AGENT HUB</h2>
-                <p class="subtitle">Manage Players & Commissions</p>
-
-                <form id="agent-login-form" class="auth-form active">
-                    <div class="input-group">
-                        <label>Agent Code</label>
-                        <input type="text" placeholder="Enter Agent ID" required id="agent-id">
+        <!-- ===== LOGIN ===== -->
+        <div class="login-wrap" id="view-login">
+            <div class="login-card">
+                <div class="lc-logo">🤝 AGENT HUB</div>
+                <div class="lc-sub">Agent Partner Portal</div>
+                <form id="login-form">
+                    <div class="field">
+                        <label>Agent ID</label>
+                        <input type="text" id="agent-id" placeholder="Enter your agent ID" required>
                     </div>
-                    <div class="input-group">
+                    <div class="field">
                         <label>Password</label>
-                        <input type="password" placeholder="••••••••" required id="agent-pass">
+                        <input type="password" id="agent-pass" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-glow"
-                        style="width: 100%; border-color: var(--neon-primary); color: var(--bg-dark); background:var(--neon-primary);">LOGIN
-                        TO HUB</button>
-                    <div style="margin-top: 20px;">
-                        <a href="#"
-                            style="color: var(--text-muted); font-family: var(--font-ui); text-decoration: none;">Apply
-                            to become an Agent</a>
-                    </div>
+                    <button type="submit" class="login-btn">🚀 Enter Hub</button>
                 </form>
             </div>
-        </section>
+        </div>
 
-        <!-- VIEW: Agent Dashboard -->
-        <section id="view-agent-dash" class="view hidden">
-            <header class="agent-header glass-panel">
-                <h1 class="logo glow-text" style="color: var(--neon-primary)">AGENT SECURE PORTAL</h1>
-                <button class="btn btn-outline btn-sm" onclick="location.reload()"
-                    style="position: absolute; right: 20px; top: 25px;">Logout</button>
+        <!-- ===== DASHBOARD ===== -->
+        <div id="view-dash" class="hidden" style="display:flex;flex-direction:column;min-height:100vh;">
+
+            <!-- Header -->
+            <header class="app-header">
+                <div class="logo-text">
+                    Agent Hub <div class="live-dot"></div>
+                    <span class="agent-badge">AGENT</span>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <div class="icon-btn">🔔</div>
+                    <button class="logout-pill" onclick="location.reload()">Logout</button>
+                </div>
             </header>
 
-            <div class="agent-layout">
-
-                <!-- Financial Overview -->
-                <div class="glass-panel" style="padding: 30px; margin-bottom: 20px; text-align: center;">
-                    <h3 style="color: var(--text-muted); margin-bottom: 10px;">Current Commission Balance</h3>
-                    <div class="glow-text"
-                        style="font-size: 3rem; font-family: var(--font-heading); color: var(--neon-primary); margin-bottom: 20px;">
-                        💎 45,200
-                    </div>
-                    <div style="display: flex; justify-content: center; gap: 15px;">
-                        <button class="btn btn-primary"
-                            style="border-color: var(--neon-primary); color: var(--bg-dark); background:var(--neon-primary);">Withdraw
-                            to Bank</button>
-                        <button class="btn btn-outline">Transfer to Player</button>
-                    </div>
+            <!-- Commission Banner -->
+            <div class="commission-banner">
+                <div class="cb-left">
+                    <div class="cb-lbl">Total Commission Earned</div>
+                    <div class="cb-val">💰 ₹12,800</div>
                 </div>
-
-                <!-- Tools Grid -->
-                <div class="grid-blocks">
-                    <div class="glass-panel" style="padding: 20px;">
-                        <h3 style="margin-bottom: 15px; color: #00f0ff">👥 My Players</h3>
-                        <p class="subtitle" style="font-size: 0.9rem;">Total Active: 142</p>
-                        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">Player List</button>
-                        <button class="btn btn-secondary" style="width: 100%;">Create New Player Account</button>
-                    </div>
-
-                    <div class="glass-panel" style="padding: 20px;">
-                        <h3 style="margin-bottom: 15px; color: #00f0ff">💰 Top-up Console</h3>
-                        <div class="input-group" style="margin-bottom: 10px;">
-                            <input type="text" placeholder="Player ID">
-                        </div>
-                        <div class="input-group" style="margin-bottom: 10px;">
-                            <input type="number" placeholder="💎 Amount">
-                        </div>
-                        <button class="btn btn-outline" style="width: 100%; border-color: #00f0ff; color: #00f0ff;">Send
-                            Diamonds</button>
-                    </div>
-
-                    <div class="glass-panel" style="padding: 20px;">
-                        <h3 style="margin-bottom: 15px; color: #00f0ff">📊 Reports</h3>
-                        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">Daily Commission
-                            Log</button>
-                        <button class="btn btn-secondary" style="width: 100%;">Deposit History</button>
-                    </div>
-                </div>
-
+                <button class="withdraw-mini" onclick="alert('Withdrawal request sent for ₹12,800!')">Withdraw</button>
             </div>
-        </section>
+
+            <!-- Tabs -->
+            <div class="tab-bar">
+                <button class="tab-item active" onclick="switchTab('dashboard', this)">Dashboard</button>
+                <button class="tab-item" onclick="switchTab('players', this)">My Players</button>
+                <button class="tab-item" onclick="switchTab('earnings', this)">Earnings</button>
+                <button class="tab-item" onclick="switchTab('referral', this)">Referral</button>
+                <button class="tab-item" onclick="switchTab('profile', this)">Profile</button>
+            </div>
+
+            <!-- ===== PAGE: DASHBOARD ===== -->
+            <div class="page active" id="page-dashboard">
+
+                <!-- Quick Actions -->
+                <div class="card gold-top">
+                    <div class="section-title">⚡ Quick Actions</div>
+                    <div class="qa-grid">
+                        <div class="qa-item" onclick="switchTab('referral', null, null)">
+                            <div class="qa-icon">🔗</div>
+                            <div class="qa-label">Share Referral</div>
+                        </div>
+                        <div class="qa-item" onclick="switchTab('players', null, null)">
+                            <div class="qa-icon">👥</div>
+                            <div class="qa-label">My Players</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="qa-icon">🎫</div>
+                            <div class="qa-label">Sell Tickets</div>
+                        </div>
+                        <div class="qa-item" onclick="switchTab('earnings', null, null)">
+                            <div class="qa-icon">💰</div>
+                            <div class="qa-label">Earnings</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="qa-icon">📊</div>
+                            <div class="qa-label">My Analytics</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="qa-icon">🆘</div>
+                            <div class="qa-label">Support</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stat-row">
+                    <div class="stat-box">
+                        <div class="sb-lbl">My Players</div>
+                        <div class="sb-val c-cyan">128</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="sb-lbl">This Month</div>
+                        <div class="sb-val c-gold">₹4,200</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-box">
+                        <div class="sb-lbl">Tickets Sold</div>
+                        <div class="sb-val c-purple">843</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="sb-lbl">Pending</div>
+                        <div class="sb-val c-green">₹1,500</div>
+                    </div>
+                </div>
+
+                <!-- Monthly Target -->
+                <div class="card cyan-top">
+                    <div class="section-title">🎯 Monthly Target</div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                        <span style="font-size:0.85rem;color:var(--muted);">Commission Progress</span>
+                        <span style="font-size:0.85rem;font-weight:800;color:var(--ag);">₹4,200 / ₹10,000</span>
+                    </div>
+                    <div class="progress-wrap">
+                        <div class="progress-bar" style="width: 42%;"></div>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--muted);margin-top:8px;">42% complete — reach ₹10,000 for
+                        Elite Agent status 🏆</div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card green-top">
+                    <div class="section-title">💼 Agent Tools</div>
+                    <button class="g-btn gold fill">🎫 Issue Tickets to Players</button>
+                    <button class="g-btn cyan">📢 Send WhatsApp Invite</button>
+                    <button class="g-btn gold">📝 Submit Withdrawal Request</button>
+                    <button class="g-btn ghost">📋 Download My Report</button>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: MY PLAYERS ===== -->
+            <div class="page" id="page-players">
+                <div class="card gold-top">
+                    <div class="section-title">👥 My Players (128)</div>
+                    <div style="display:flex;gap:8px;margin-bottom:12px;">
+                        <input type="text" placeholder="🔍 Search player..."
+                            style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);outline:none;font-family:'Nunito',sans-serif;font-size:0.85rem;">
+                        <button class="g-btn gold" style="width:auto;padding:10px 14px;margin:0;">Filter</button>
+                    </div>
+                    <div id="player-list"></div>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: EARNINGS ===== -->
+            <div class="page" id="page-earnings">
+                <!-- Summary -->
+                <div
+                    style="background:linear-gradient(135deg, #92400e, #78350f); border-radius:16px; padding:24px; position:relative; overflow:hidden; box-shadow: 0 8px 30px rgba(245,158,11,0.25);">
+                    <div
+                        style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:2px;">
+                        Total Lifetime Earnings</div>
+                    <div
+                        style="font-family:'Poppins',sans-serif;font-size:2.4rem;font-weight:900;color:var(--ag);margin:8px 0 4px;">
+                        ₹12,800</div>
+                    <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);">Agent ID: AGT-ST-0042</div>
+                    <div style="position:absolute;right:-20px;top:-20px;font-size:5rem;opacity:0.07;">💰</div>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat-box">
+                        <div class="sb-lbl">This Week</div>
+                        <div class="sb-val c-gold">₹1,050</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="sb-lbl">Commission Rate</div>
+                        <div class="sb-val c-green">8%</div>
+                    </div>
+                </div>
+
+                <div class="card gold-top">
+                    <div class="section-title">📜 Transaction History</div>
+                    <div id="tx-list"></div>
+                </div>
+
+                <div class="card green-top">
+                    <div class="section-title">💳 Withdrawal</div>
+                    <button class="g-btn gold fill">💰 Withdraw ₹12,800</button>
+                    <button class="g-btn ghost">🏦 Add Bank Account</button>
+                    <button class="g-btn ghost">📱 Link UPI ID</button>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: REFERRAL ===== -->
+            <div class="page" id="page-referral">
+                <div class="ref-card">
+                    <div style="font-size:0.85rem;color:var(--muted);">Your Referral Code</div>
+                    <div class="ref-code">AGT0042</div>
+                    <div class="ref-sub">Share this code with players. Earn 8% on every ticket they buy!</div>
+                    <button class="g-btn gold fill" onclick="copyCode()">📋 Copy Code</button>
+                </div>
+
+                <div class="card cyan-top">
+                    <div class="section-title">📣 Share Your Link</div>
+                    <button class="g-btn green" onclick="share('whatsapp')">💬 Share on WhatsApp</button>
+                    <button class="g-btn cyan" onclick="share('telegram')">✈️ Share on Telegram</button>
+                    <button class="g-btn ghost" onclick="share('copy')">🔗 Copy Referral Link</button>
+                </div>
+
+                <div class="card gold-top">
+                    <div class="section-title">📊 Referral Stats</div>
+                    <div class="wallet-row"
+                        style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <div>
+                            <div style="font-weight:800;">Total Referred</div>
+                            <div style="font-size:0.75rem;color:var(--muted);">Players who joined via your code</div>
+                        </div>
+                        <div
+                            style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:var(--cyan);">
+                            128</div>
+                    </div>
+                    <div class="wallet-row"
+                        style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;">
+                        <div>
+                            <div style="font-weight:800;">Active This Month</div>
+                            <div style="font-size:0.75rem;color:var(--muted);">Players who played this month</div>
+                        </div>
+                        <div
+                            style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:var(--green);">
+                            94</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: PROFILE ===== -->
+            <div class="page" id="page-profile">
+                <div
+                    style="background:linear-gradient(135deg, rgba(245,158,11,0.12), rgba(124,58,237,0.1)); border:1px solid rgba(245,158,11,0.25); border-radius:16px; padding:24px; text-align:center;">
+                    <div
+                        style="width:72px;height:72px;background:linear-gradient(135deg,var(--ag),var(--neon));border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 0 25px rgba(245,158,11,0.35);">
+                        🤝</div>
+                    <div style="font-size:1.2rem;font-weight:900;">Agent Rahul</div>
+                    <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">ID: AGT-ST-0042 · Elite Agent 🏆
+                    </div>
+                    <div
+                        style="margin-top:12px;padding:8px 20px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:20px;display:inline-block;font-size:0.8rem;font-weight:700;color:var(--ag);">
+                        Commission Rate: 8%</div>
+                </div>
+
+                <div class="card gold-top">
+                    <div class="section-title">📋 Account Details</div>
+                    <button class="g-btn gold">✏️ Edit Profile</button>
+                    <button class="g-btn cyan">🔑 Change Password</button>
+                    <button class="g-btn ghost">🏦 Update Bank / UPI Details</button>
+                    <button class="g-btn ghost">📱 Update Phone Number</button>
+                </div>
+
+                <div class="card purple-top">
+                    <div class="section-title">🏆 Achievements</div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+                        <div
+                            style="background:var(--card2);border-radius:12px;padding:14px 8px;text-align:center;border:1px solid rgba(245,158,11,0.2);">
+                            <div style="font-size:1.5rem;">🥇</div>
+                            <div style="font-size:0.7rem;font-weight:700;margin-top:5px;color:var(--ag);">Top Agent
+                            </div>
+                        </div>
+                        <div
+                            style="background:var(--card2);border-radius:12px;padding:14px 8px;text-align:center;border:1px solid rgba(6,182,212,0.2);">
+                            <div style="font-size:1.5rem;">💯</div>
+                            <div style="font-size:0.7rem;font-weight:700;margin-top:5px;color:var(--cyan);">100 Players
+                            </div>
+                        </div>
+                        <div
+                            style="background:var(--card2);border-radius:12px;padding:14px 8px;text-align:center;border:1px solid rgba(16,185,129,0.2);">
+                            <div style="font-size:1.5rem;">🔥</div>
+                            <div style="font-size:0.7rem;font-weight:700;margin-top:5px;color:var(--green);">30 Day
+                                Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Nav -->
+            <nav class="bottom-nav">
+                <button class="bnav-item active" onclick="switchTab('dashboard', null, this)">
+                    <div class="bi-icon">🏠</div>
+                    <div class="bi-label">Home</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('players', null, this)">
+                    <div class="bi-icon">👥</div>
+                    <div class="bi-label">Players</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('earnings', null, this)">
+                    <div class="bi-icon">💰</div>
+                    <div class="bi-label">Earnings</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('referral', null, this)">
+                    <div class="bi-icon">🔗</div>
+                    <div class="bi-label">Referral</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('profile', null, this)">
+                    <div class="bi-icon">👤</div>
+                    <div class="bi-label">Profile</div>
+                </button>
+            </nav>
+        </div>
     </div>
 
     <script>
-        document.getElementById('agent-login-form').addEventListener('submit', (e) => {
+        // ---- TABS ----
+        window.switchTab = function (tab, tabEl, navEl) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + tab).classList.add('active');
+            if (tabEl) { document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); tabEl.classList.add('active'); }
+            if (navEl) { document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active')); navEl.classList.add('active'); }
+        };
+
+        // ---- LOGIN ----
+        document.getElementById('login-form').addEventListener('submit', e => {
             e.preventDefault();
-            const id = document.getElementById('agent-id').value;
-            const pass = document.getElementById('agent-pass').value;
-            // Dummy authentication
-            if (id && pass) {
-                document.getElementById('view-agent-auth').classList.add('hidden');
-                document.getElementById('view-agent-dash').classList.remove('hidden');
+            if (document.getElementById('agent-id').value && document.getElementById('agent-pass').value) {
+                document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('view-dash').classList.remove('hidden');
+                populatePlayers(); populateTransactions();
             }
         });
+
+        // ---- PLAYERS ----
+        function populatePlayers() {
+            const players = [
+                { name: 'Anita Singh', joined: '12 tickets · ₹1,200', initials: 'AS' },
+                { name: 'Ramesh Yadav', joined: '8 tickets · ₹800', initials: 'RY' },
+                { name: 'Kavita Patel', joined: '15 tickets · ₹1,500', initials: 'KP' },
+                { name: 'Sunil Mehta', joined: '5 tickets · ₹500', initials: 'SM' },
+                { name: 'Pooja Sharma', joined: '20 tickets · ₹2,000', initials: 'PS' },
+            ];
+            const list = document.getElementById('player-list');
+            const commissions = ['₹96', '₹64', '₹120', '₹40', '₹160'];
+            players.forEach((p, i) => {
+                list.innerHTML += `<div class="player-item">
+            <div class="pi-left">
+                <div class="pi-avatar">${p.initials}</div>
+                <div class="pi-info"><div class="pi-name">${p.name}</div><div class="pi-sub">${p.joined}</div></div>
+            </div>
+            <div class="pi-earnings">${commissions[i]}</div>
+        </div>`;
+            });
+        }
+
+        // ---- TRANSACTIONS ----
+        function populateTransactions() {
+            const txs = [
+                { desc: 'Commission – 12 tickets', date: 'Today, 6:30 PM', amount: '+₹96', type: 'positive' },
+                { desc: 'Withdrawal to UPI', date: 'Yesterday, 2:00 PM', amount: '-₹5,000', type: 'negative' },
+                { desc: 'Commission – 8 tickets', date: '24 Feb', amount: '+₹64', type: 'positive' },
+                { desc: 'Commission – 15 tickets', date: '23 Feb', amount: '+₹120', type: 'positive' },
+                { desc: 'Bonus – Top Agent', date: '20 Feb', amount: '+₹500', type: 'positive' },
+            ];
+            const list = document.getElementById('tx-list');
+            txs.forEach(t => {
+                list.innerHTML += `<div class="tx-item">
+            <div><div class="tx-desc">${t.desc}</div><div class="tx-date">${t.date}</div></div>
+            <div class="tx-amount ${t.type}">${t.amount}</div>
+        </div>`;
+            });
+        }
+
+        // ---- REFERRAL ----
+        window.copyCode = function () {
+            navigator.clipboard?.writeText('AGT0042').catch(() => { });
+            alert('✅ Code AGT0042 copied!');
+        };
+        window.share = function (platform) {
+            const msg = 'Join Siang Tambola and play live Tambola! Use my agent code AGT0042 to register. 🎯 https://subas2.github.io/SIANG-TAMBOLA/';
+            if (platform === 'whatsapp') window.open('https://wa.me/?text=' + encodeURIComponent(msg));
+            else if (platform === 'telegram') window.open('https://t.me/share/url?url=' + encodeURIComponent('https://subas2.github.io/SIANG-TAMBOLA/') + '&text=' + encodeURIComponent(msg));
+            else { navigator.clipboard?.writeText(msg).catch(() => { }); alert('✅ Link copied!'); }
+        };
     </script>
 </body>
 
