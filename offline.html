@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siang Tambola – Offline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0f0828;
+            color: #e2d9f3;
+            font-family: 'Nunito', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.9rem;
+            max-width: 280px;
+            line-height: 1.6;
+        }
+
+        .retry-btn {
+            margin-top: 28px;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(124, 58, 237, 0.4);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="icon">🎰</div>
+    <h1>You're Offline</h1>
+    <p>Siang Tambola needs an internet connection to play live games. Please connect and try again.</p>
+    <button class="retry-btn" onclick="window.location.reload()">🔄 Retry</button>
+</body>
+
+</html>

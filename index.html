@@ -1340,6 +1340,133 @@
         // Also expose for inline code
         window.phase3 = { calledNumbers, generateTicket, checkAllWins };
     </script>
+
+    <!-- ===== PHASE 4: PWA + WALLET + BOOKING + BROADCAST ===== -->
+    <script type="module">
+        import { initPWA, showInstallBanner } from './js/pwa.js';
+        import { subscribeToBroadcasts, showToast } from './js/broadcast.js';
+        import { openWalletTopUp, getWalletBalance, getTransactions } from './js/payment.js';
+        import { listenToSeats, reserveSeat, renderSeatGrid, getMyTickets } from './js/booking.js';
+        import { getPlayerStats } from './js/analytics.js';
+        import { onAuth } from './js/auth.js';
+
+        // ── PWA init ──
+        initPWA();
+
+        // ── Broadcast toasts ──
+        subscribeToBroadcasts();
+
+        // ── Auth-dependent features ──
+        onAuth(async (user) => {
+            if (!user) return;
+            const uid = user.uid;
+
+            // Update wallet balance display
+            const bal = await getWalletBalance(uid);
+            document.querySelectorAll('.wallet-balance-display').forEach(el => el.textContent = '₹' + bal.toLocaleString());
+
+            // Player stats in profile panel
+            const stats = await getPlayerStats(uid);
+            const statsEl = document.getElementById('player-stats-panel');
+            if (statsEl) {
+                statsEl.innerHTML = `
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px;margin-bottom:12px;">
+                        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:center;">
+                            <div style="font-size:1.4rem;font-weight:900;">${stats.gamesPlayed}</div>
+                            <div style="font-size:0.7rem;color:var(--muted);">Games Played</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:center;">
+                            <div style="font-size:1.4rem;font-weight:900;color:var(--green);">${stats.gamesWon}</div>
+                            <div style="font-size:0.7rem;color:var(--muted);">Wins 🏆</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:center;">
+                            <div style="font-size:1.4rem;font-weight:900;color:var(--gold);">₹${stats.totalPrize}</div>
+                            <div style="font-size:0.7rem;color:var(--muted);">Total Won</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:center;">
+                            <div style="font-size:1.4rem;font-weight:900;color:var(--cyan);">${stats.winRate}%</div>
+                            <div style="font-size:0.7rem;color:var(--muted);">Win Rate</div>
+                        </div>
+                    </div>`;
+            }
+
+            // Wallet transaction history
+            const txEl = document.getElementById('wallet-tx-list');
+            if (txEl) {
+                const txs = await getTransactions(uid, 5);
+                txEl.innerHTML = txs.length === 0 ? '<div style="color:var(--muted);text-align:center;padding:12px;font-size:0.85rem;">No transactions yet</div>' :
+                    txs.map(tx => `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <span style="font-size:0.85rem;">${tx.type === 'topup' ? '💳 Top-Up' : '🎫 Ticket Purchase'}</span>
+                            <span style="font-weight:800;color:${tx.type === 'topup' ? 'var(--green)' : 'var(--red)'};">${tx.type === 'topup' ? '+' : '-'}₹${tx.amount}</span>
+                        </div>`).join('');
+            }
+
+            // Seat booking
+            const bookingGameId = window.activeGameId || 'game_default';
+            const seatGrid = document.getElementById('seat-grid');
+            if (seatGrid) {
+                listenToSeats(bookingGameId, (seats) => {
+                    renderSeatGrid(seatGrid, seats, uid, null);
+                });
+                window.bookingSeatClick = async (seatId) => {
+                    if (!confirm(`Book Seat ${seatId.replace('seat_', '#')}? Your wallet will be charged.`)) return;
+                    showToast('⏳ Reserving your seat...', 'info', 2000);
+                    const result = await reserveSeat(bookingGameId, seatId, uid, user.displayName || 'Player');
+                    if (result.success) {
+                        showToast(`✅ Seat booked! ₹${result.price} deducted from wallet.`, 'win', 5000);
+                        // Show ticket
+                        const myList = document.getElementById('my-ticket-list');
+                        if (myList && result.ticketGrid) {
+                            const wrap = document.createElement('div');
+                            wrap.className = 'ticket-card';
+                            wrap.innerHTML = `<div class="ticket-header"><span style="font-weight:800">${seatId.replace('seat_', 'Seat #')}</span><span class="ticket-id">BOOKED</span></div>`;
+                            const grid_el = document.createElement('div');
+                            grid_el.className = 'ticket-grid';
+                            result.ticketGrid.forEach(row => row.forEach(num => {
+                                const cell = document.createElement('div');
+                                cell.className = num === 0 ? 't-cell empty' : 't-cell';
+                                cell.textContent = num || '';
+                                cell.dataset.num = num;
+                                grid_el.appendChild(cell);
+                            }));
+                            wrap.appendChild(grid_el);
+                            myList.prepend(wrap);
+                        }
+                    } else {
+                        showToast(`❌ ${result.error}`, 'error', 4000);
+                    }
+                };
+            }
+        });
+
+        // ── Wallet top-up button ──
+        const addMoneyBtn = document.getElementById('btn-add-money');
+        if (addMoneyBtn) {
+            addMoneyBtn.addEventListener('click', async () => {
+                const { auth } = await import('./js/auth.js');
+                const user = auth?.currentUser;
+                if (!user) { showToast('Please login first!', 'warning'); return; }
+                const amount = parseInt(prompt('Enter amount to add (₹10 – ₹10,000):') || '0');
+                if (!amount || amount < 10) { showToast('Minimum top-up is ₹10', 'warning'); return; }
+                openWalletTopUp({
+                    uid: user.uid,
+                    name: user.displayName || 'Player',
+                    phone: user.phoneNumber || '',
+                    amount,
+                    onSuccess: ({ paymentId, amount }) => {
+                        showToast(`✅ ₹${amount} added to wallet!`, 'win', 5000);
+                        document.querySelectorAll('.wallet-balance-display').forEach(el => {
+                            el.textContent = '₹' + ((parseInt(el.textContent.replace(/[^0-9]/g, '')) || 0) + amount).toLocaleString();
+                        });
+                    },
+                    onFailure: (err) => showToast(`❌ Payment failed: ${err}`, 'error')
+                });
+            });
+        }
+
+        window.phase4 = { showToast };
+    </script>
 </body>
 
 </html>
