@@ -4,147 +4,955 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIANG TAMBOLA - GOD LEVEL</title>
-    <!-- Google Fonts -->
+    <title>Siang Tambola – Live Game</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-
-    <!-- PWA Setup -->
-    <meta name="theme-color" content="#0e0b16">
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a0a3e">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0f0828;
+            --bg2: #150d38;
+            --card: #1e1248;
+            --card2: #251555;
+            --accent: #7c3aed;
+            --accent2: #6d28d9;
+            --neon: #8b5cf6;
+            --cyan: #06b6d4;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --red: #ef4444;
+            --text: #e2d9f3;
+            --muted: #7c6fa0;
+            --border: rgba(124, 58, 237, 0.25);
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ---- Scrollbar ---- */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* ---- APP SHELL ---- */
+        #app {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* ---- HEADER ---- */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--gold);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(0.8);
+            }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .wallet-badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+        }
+
+        /* ---- TABS ---- */
+        .tab-bar {
+            display: flex;
+            background: var(--bg2);
+            padding: 6px 16px;
+            gap: 4px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            flex-shrink: 0;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+        }
+
+        .tab-item.active {
+            background: var(--card2);
+            color: var(--text);
+        }
+
+        /* ---- SCROLLABLE CONTENT ---- */
+        .page {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* ---- SECTION TITLE ---- */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        /* ---- QUICK ACTIONS ---- */
+        .quick-actions-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .qa-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .qa-item {
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .qa-item:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .qa-icon {
+            font-size: 1.5rem;
+        }
+
+        .qa-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text);
+        }
+
+        /* ---- LIVE GAME SECTION ---- */
+        .live-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 16px;
+        }
+
+        .live-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Circle */
+        .live-circle-wrap {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .live-circle-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .live-circle-svg circle.track {
+            fill: none;
+            stroke: rgba(124, 58, 237, 0.2);
+            stroke-width: 5;
+        }
+
+        .live-circle-svg circle.progress {
+            fill: none;
+            stroke: url(#grad1);
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-dasharray: 345;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .live-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .live-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .live-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .live-number.idle {
+            font-size: 1rem;
+            color: var(--muted);
+        }
+
+        /* Next In + Sound */
+        .live-side-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next-in-badge {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .next-in-badge .ni-num {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .next-in-badge .ni-label {
+            font-size: 0.55rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sound-btn {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .sound-btn:hover {
+            background: var(--accent);
+        }
+
+        /* ---- NUMBER BOARD ---- */
+        .number-board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+        }
+
+        .nb-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: var(--card2);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nb-cell.called {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border-color: var(--neon);
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+
+        .nb-cell.latest {
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+            transform: scale(1.1);
+            z-index: 2;
+        }
+
+        /* ---- CLAIM BUTTONS ---- */
+        .claims-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .claim-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .claim-btn .prize {
+            color: var(--gold);
+            font-size: 0.75rem;
+        }
+
+        .claim-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: var(--accent);
+        }
+
+        .claim-btn.fullhouse {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(6, 182, 212, 0.2));
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        /* ---- TICKET PAGE ---- */
+        .ticket-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 4px;
+        }
+
+        .ticket-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .t-cell {
+            aspect-ratio: 1;
+            background: var(--card2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .t-cell.empty {
+            background: rgba(255, 255, 255, 0.02);
+            color: transparent;
+        }
+
+        .t-cell.marked {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border-color: var(--neon);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticket-id {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        /* ---- WALLET ---- */
+        .wallet-hero {
+            background: linear-gradient(135deg, var(--accent), #4c1d95);
+            border-radius: 20px;
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        .wallet-hero .wh-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.65);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .wallet-hero .wh-amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .wallet-hero .wh-sub {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 4px;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .w-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            transition: all 0.25s;
+        }
+
+        .w-btn.add {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .w-btn.withdraw {
+            background: var(--card2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .w-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* ---- BOTTOM NAV ---- */
+        .bottom-nav {
+            display: flex;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 4px;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .bnav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 6px 0;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .bnav-item .bi-icon {
+            font-size: 1.3rem;
+        }
+
+        .bnav-item .bi-label {
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bnav-item.active .bi-label {
+            color: var(--neon);
+        }
+
+        .bnav-item.active .bi-icon {
+            filter: drop-shadow(0 0 6px var(--neon));
+        }
+
+        /* ---- ANIMATIONS ---- */
+        @keyframes number-pop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .nb-cell.latest {
+            animation: number-pop 0.4s ease forwards;
+        }
+
+        /* ---- DESKTOP PADDING ---- */
+        @media (min-width: 481px) {
+            #app {
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
-<body class="theme-neon-cyber">
+<body>
 
-    <!-- Background Effects -->
-    <div class="background-effects">
-        <div class="grid-overlay"></div>
-        <div class="glow-orb orb-1"></div>
-        <div class="glow-orb orb-2"></div>
-    </div>
+    <div id="app">
 
-    <!-- App Container -->
-    <div id="app-container">
-
-        <!-- Header / Nav -->
-        <header class="app-header glass-panel hidden" id="main-header">
-            <h1 class="logo glow-text">SIANG TAMBOLA</h1>
-            <div class="user-info">
-                <span id="user-wallet" class="wallet-badge">💎 0</span>
-                <button id="btn-profile" class="btn btn-outline">Profile</button>
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-text">
+                Siang Tambola <div class="logo-dot"></div>
+            </div>
+            <div class="header-actions">
+                <div class="wallet-badge" id="wallet-display">💎 5,000</div>
+                <div class="icon-btn" title="Notifications">🔔</div>
+                <div class="icon-btn" title="Profile">👤</div>
             </div>
         </header>
 
-        <!-- Main Content Area (Views) -->
-        <main id="main-content">
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+            <button class="tab-item active" onclick="switchTab('dashboard', this)">Dashboard</button>
+            <button class="tab-item" onclick="switchTab('all-tickets', this)">All Ticket</button>
+            <button class="tab-item" onclick="switchTab('my-tickets', this)">My Ticket</button>
+            <button class="tab-item" onclick="switchTab('wallet', this)">Wallet 💎</button>
+        </div>
 
+        <!-- PAGE: DASHBOARD -->
+        <div class="page active" id="page-dashboard">
 
-
-            <!-- VIEW: Lobby / Main Menu -->
-            <section id="view-lobby" class="view hidden">
-                <div class="lobby-grid">
-                    <div class="card glass-panel play-card">
-                        <h3>Join Live Game</h3>
-                        <p>Next game starts in: <span class="countdown">04:59</span></p>
-                        <button class="btn btn-primary btn-glow btn-lg" id="btn-join-room">PLAY NOW</button>
+            <!-- Quick Actions -->
+            <div class="quick-actions-card">
+                <div class="section-title">Quick Actions</div>
+                <div class="qa-grid">
+                    <div class="qa-item">
+                        <div class="qa-icon">📊</div>
+                        <div class="qa-label">My Analysis</div>
                     </div>
-
-                    <div class="side-cards">
-                        <div class="card glass-panel minigame-card">
-                            <h3>Mini Games</h3>
-                            <p>Play while waiting</p>
-                            <div class="minigame-list">
-                                <button class="btn btn-secondary">🎰 Lucky Spin</button>
-                                <button class="btn btn-secondary">⚡ Flash Bonus</button>
-                            </div>
-                        </div>
-
-                        <div class="card glass-panel wallet-card">
-                            <h3>Wallet Hub</h3>
-                            <button class="btn btn-outline" onclick="app.showView('view-wallet')">Manage Funds
-                                💎</button>
-                        </div>
+                    <div class="qa-item">
+                        <div class="qa-icon">📋</div>
+                        <div class="qa-label">My Requests</div>
                     </div>
-                </div>
-            </section>
-
-            <!-- VIEW: Game Room -->
-            <section id="view-game" class="view hidden">
-                <div class="game-layout">
-                    <!-- Left: Board & Caller -->
-                    <div class="game-board-area glass-panel">
-                        <div class="caller-display">
-                            <div class="last-called">
-                                <span class="label">Last Called</span>
-                                <div class="number glow-text pulse">42</div>
-                            </div>
-                            <div class="history">
-                                <span>35</span>
-                                <span>12</span>
-                                <span>88</span>
-                                <span>7</span>
-                            </div>
-                        </div>
-                        <div class="tambola-board" id="tambola-board">
-                            <!-- Board 1-90 generated by JS -->
-                        </div>
+                    <div class="qa-item">
+                        <div class="qa-icon">🏆</div>
+                        <div class="qa-label">Winners</div>
                     </div>
-
-                    <!-- Right: Tickets & Claims -->
-                    <div class="game-tickets-area">
-                        <div class="claims-panel glass-panel">
-                            <h3>Winning Patterns</h3>
-                            <div class="claim-buttons">
-                                <button class="btn btn-claim">Early 5 <span class="prize">💎 500</span></button>
-                                <button class="btn btn-claim">Top Row <span class="prize">💎 300</span></button>
-                                <button class="btn btn-claim">Middle Row <span class="prize">💎 300</span></button>
-                                <button class="btn btn-claim">Bottom Row <span class="prize">💎 300</span></button>
-                                <button class="btn btn-claim highlight">Full House <span class="prize">💎
-                                        5000</span></button>
-                            </div>
-                        </div>
-                        <div class="my-tickets" id="my-tickets">
-                            <!-- Tickets injected via JS -->
-                        </div>
+                    <div class="qa-item">
+                        <div class="qa-icon">👥</div>
+                        <div class="qa-label">Community</div>
+                    </div>
+                    <div class="qa-item">
+                        <div class="qa-icon">🤝</div>
+                        <div class="qa-label">Become Agent</div>
+                    </div>
+                    <div class="qa-item">
+                        <div class="qa-icon">📈</div>
+                        <div class="qa-label">Leaderboard</div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- VIEW: Wallet & Agent Hub -->
-            <section id="view-wallet" class="view hidden">
-                <div class="wallet-layout glass-panel">
-                    <button class="btn btn-icon btn-back" onclick="app.showView('view-lobby')">⬅ Back</button>
-                    <h2>Financial Hub</h2>
-                    <div class="balance-display">
-                        <div class="bal-box">
-                            <span class="label">Player Balance</span>
-                            <div class="amt">💎 4,500</div>
-                            <div class="actions">
-                                <button class="btn btn-sm btn-primary">Add</button>
-                                <button class="btn btn-sm btn-outline">Withdraw</button>
-                            </div>
-                        </div>
-                        <div class="bal-box agent-box hidden">
-                            <span class="label">Agent Commission</span>
-                            <div class="amt glow-text text-gold">💎 1,200</div>
-                            <button class="btn btn-sm btn-gold">Transfer to Wallet</button>
+            <!-- LIVE GAME -->
+            <div class="live-card">
+                <div class="section-title">🔴 Live Game</div>
+
+                <div class="live-top">
+                    <!-- Animated Circle -->
+                    <div class="live-circle-wrap">
+                        <svg class="live-circle-svg" viewBox="0 0 120 120">
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#7c3aed" />
+                                    <stop offset="100%" style="stop-color:#06b6d4" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="track" cx="60" cy="60" r="55" />
+                            <circle class="progress" id="progress-arc" cx="60" cy="60" r="55" />
+                        </svg>
+                        <div class="live-center">
+                            <div class="live-label">LIVE</div>
+                            <div class="live-number" id="live-num">—</div>
                         </div>
                     </div>
+
+                    <!-- Side Info -->
+                    <div class="live-side-info">
+                        <div class="next-in-badge">
+                            <div class="ni-num" id="countdown-num">0s</div>
+                            <div class="ni-label">Next In</div>
+                        </div>
+                        <div class="sound-btn" id="sound-toggle" onclick="toggleSound(this)">🔊</div>
+                    </div>
                 </div>
-            </section>
 
+                <!-- Claim Buttons -->
+                <div class="claims-row" style="margin-bottom: 16px;">
+                    <button class="claim-btn" onclick="claim('Early 5')">Early 5<span class="prize">💎
+                            500</span></button>
+                    <button class="claim-btn" onclick="claim('Top Row')">Top Row<span class="prize">💎
+                            300</span></button>
+                    <button class="claim-btn" onclick="claim('Mid Row')">Mid Row<span class="prize">💎
+                            300</span></button>
+                    <button class="claim-btn" onclick="claim('Bot Row')">Bot Row<span class="prize">💎
+                            300</span></button>
+                    <button class="claim-btn fullhouse" onclick="claim('Full House')">Full House<span class="prize"
+                            style="color:#fff">💎 5,000</span></button>
+                </div>
 
+                <!-- Number Board -->
+                <div class="section-title">Numbers Board</div>
+                <div class="number-board" id="number-board"></div>
+            </div>
 
-        </main>
+        </div>
+
+        <!-- PAGE: ALL TICKETS -->
+        <div class="page" id="page-all-tickets">
+            <div class="section-title">All Available Tickets</div>
+            <div id="all-tickets-list"></div>
+        </div>
+
+        <!-- PAGE: MY TICKETS -->
+        <div class="page" id="page-my-tickets">
+            <div class="section-title">🎫 My Tickets</div>
+            <div id="my-ticket-list"></div>
+        </div>
+
+        <!-- PAGE: WALLET -->
+        <div class="page" id="page-wallet">
+            <div class="wallet-hero">
+                <div class="wh-label">Player Wallet</div>
+                <div class="wh-amount">💎 5,000</div>
+                <div class="wh-sub">Siang Tambola Credits</div>
+            </div>
+            <div class="wallet-actions">
+                <button class="w-btn add">+ Add Money</button>
+                <button class="w-btn withdraw">Withdraw</button>
+            </div>
+            <div class="live-card" style="margin-top:0;">
+                <div class="section-title">Transaction History</div>
+                <p style="color: var(--muted); font-size:0.9rem; margin-top:8px;">No transactions yet. Play your first
+                    game!</p>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <nav class="bottom-nav">
+            <button class="bnav-item active" onclick="switchTab('dashboard', null, this)">
+                <div class="bi-icon">🏠</div>
+                <div class="bi-label">Home</div>
+            </button>
+            <button class="bnav-item" onclick="switchTab('all-tickets', null, this)">
+                <div class="bi-icon">🎟️</div>
+                <div class="bi-label">Tickets</div>
+            </button>
+            <button class="bnav-item" onclick="switchTab('my-tickets', null, this)">
+                <div class="bi-icon">⭐</div>
+                <div class="bi-label">My Ticket</div>
+            </button>
+            <button class="bnav-item" onclick="switchTab('wallet', null, this)">
+                <div class="bi-icon">💎</div>
+                <div class="bi-label">Wallet</div>
+            </button>
+            <button class="bnav-item">
+                <div class="bi-icon">☰</div>
+                <div class="bi-label">More</div>
+            </button>
+        </nav>
     </div>
 
-    <!-- Scripts -->
-    <script type="module" src="js/firebase-config.js"></script>
-    <script type="module" src="js/app.js"></script>
-    <script type="module" src="js/tambola-engine.js"></script>
-    <script type="module" src="js/multiplayer.js"></script>
+    <script type="module">
+        import { db, ref, onValue } from './js/firebase-config.js';
+
+        // ---- TABS ----
+        window.switchTab = function (tabName, tabEl, navEl) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + tabName).classList.add('active');
+
+            // Update tab bar
+            if (tabEl) {
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                tabEl.classList.add('active');
+            }
+            // Update bottom nav
+            if (navEl) {
+                document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+                navEl.classList.add('active');
+            }
+        };
+
+        // ---- BUILD BOARD ----
+        const board = document.getElementById('number-board');
+        const calledNums = new Set();
+        let latestNum = null;
+
+        function buildBoard() {
+            board.innerHTML = '';
+            for (let i = 1; i <= 90; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'nb-cell';
+                cell.id = 'nb-' + i;
+                cell.textContent = i;
+                board.appendChild(cell);
+            }
+        }
+        buildBoard();
+
+        // ---- FIREBASE LISTENER ----
+        const ROOM_ID = 'global-room-1';
+        onValue(ref(db, `rooms/${ROOM_ID}/currentNumber`), (snap) => {
+            const num = snap.val();
+            if (!num) return;
+            showNewNumber(num);
+        });
+
+        onValue(ref(db, `rooms/${ROOM_ID}/state`), (snap) => {
+            if (snap.val() === 'reset') {
+                calledNums.clear();
+                latestNum = null;
+                buildBoard();
+                document.getElementById('live-num').textContent = '—';
+                document.getElementById('live-num').className = 'live-number idle';
+            }
+        });
+
+        function showNewNumber(num) {
+            if (latestNum) {
+                const prev = document.getElementById('nb-' + latestNum);
+                if (prev) { prev.classList.remove('latest'); prev.classList.add('called'); }
+            }
+            calledNums.add(num);
+            latestNum = num;
+
+            // Board update
+            const cell = document.getElementById('nb-' + num);
+            if (cell) { cell.classList.add('latest'); }
+
+            // Center display
+            const liveNum = document.getElementById('live-num');
+            liveNum.textContent = num;
+            liveNum.className = 'live-number';
+
+            // Animate arc
+            const arc = document.getElementById('progress-arc');
+            const pct = num / 90;
+            const dash = 345;
+            arc.style.strokeDashoffset = dash - (pct * dash);
+        }
+
+        // ---- CLAIM ----
+        window.claim = function (pattern) {
+            alert(`🏆 Claim "${pattern}" request sent! Awaiting admin verification...`);
+        };
+
+        // ---- SOUND TOGGLE ----
+        window.toggleSound = function (el) {
+            el.textContent = el.textContent === '🔊' ? '🔇' : '🔊';
+        };
+
+        // ---- GENERATE TICKETS ----
+        function generateTicket() {
+            const ticket = [];
+            for (let row = 0; row < 3; row++) {
+                const rowData = [];
+                const cols = [...Array(9).keys()].sort(() => Math.random() - 0.5).slice(0, 5);
+                for (let col = 0; col < 9; col++) {
+                    if (cols.includes(col)) {
+                        const min = col * 10 + 1;
+                        const max = col * 10 + 10;
+                        rowData.push(Math.floor(Math.random() * (max - min + 1)) + min);
+                    } else {
+                        rowData.push(0);
+                    }
+                }
+                ticket.push(rowData);
+            }
+            return ticket;
+        }
+
+        function renderTicket(container, ticket, id) {
+            const card = document.createElement('div');
+            card.className = 'ticket-card';
+            card.innerHTML = `<div class="ticket-header">
+        <span style="font-weight:800; font-size:0.95rem;">Ticket #${id}</span>
+        <span class="ticket-id">ID: ST-${Math.random().toString(36).slice(2, 8).toUpperCase()}</span>
+    </div>
+    <div class="ticket-grid" id="tg-${id}"></div>`;
+            container.appendChild(card);
+
+            const grid = card.querySelector('.ticket-grid');
+            ticket.flat().forEach((num, idx) => {
+                const cell = document.createElement('div');
+                cell.className = num === 0 ? 't-cell empty' : 't-cell';
+                cell.textContent = num || '';
+                if (num && calledNums.has(num)) cell.classList.add('marked');
+                cell.onclick = () => cell.classList.toggle('marked');
+                grid.appendChild(cell);
+            });
+        }
+
+        // Populate tickets
+        const myList = document.getElementById('my-ticket-list');
+        const allList = document.getElementById('all-tickets-list');
+        for (let i = 1; i <= 3; i++) renderTicket(myList, generateTicket(), i);
+        for (let i = 4; i <= 8; i++) renderTicket(allList, generateTicket(), i);
+
+    </script>
 </body>
 
 </html>
