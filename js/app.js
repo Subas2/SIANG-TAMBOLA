@@ -3,7 +3,7 @@
  * Handles View logic, initializations, and global state
  */
 
-const views = ['view-auth', 'view-lobby', 'view-game', 'view-wallet', 'view-admin'];
+const views = ['view-auth', 'view-lobby', 'view-game', 'view-wallet'];
 
 const app = {
     state: {
@@ -24,10 +24,10 @@ const app = {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const target = e.target.dataset.target;
-                
+
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
-                
+
                 document.getElementById('login-form').classList.toggle('hidden', target !== 'login');
                 document.getElementById('register-form').classList.toggle('hidden', target !== 'register');
             });
@@ -38,7 +38,7 @@ const app = {
             e.preventDefault();
             this.loginDummy('player');
         });
-        
+
         // Dummy Join Room
         document.getElementById('btn-join-room').addEventListener('click', () => {
             this.showView('view-game');
@@ -49,22 +49,18 @@ const app = {
         this.state.user = { uid: '123', name: 'Elite Player' };
         this.state.role = role;
         this.state.wallet = 5000;
-        
+
         document.getElementById('main-header').classList.remove('hidden');
         document.getElementById('user-wallet').innerHTML = `💎 ${this.state.wallet}`;
-        
-        if (role === 'admin') {
-            this.showView('view-admin');
-        } else {
-            this.showView('view-lobby');
-        }
+
+        this.showView('view-lobby');
     },
 
     showView(viewId) {
         views.forEach(v => {
             const el = document.getElementById(v);
-            if(el) {
-                if(v === viewId) {
+            if (el) {
+                if (v === viewId) {
                     el.classList.remove('hidden');
                     // Trigger reflow for animations potentially
                     void el.offsetWidth;

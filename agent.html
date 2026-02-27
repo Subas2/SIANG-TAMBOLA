@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENT PORTAL - SIANG TAMBOLA</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Agent Specific Overrides */
+        .agent-theme {
+            --neon-primary: #ffd700;
+            /* Gold dominant for Agents (Money) */
+            --shadow-glow: 0 0 15px rgba(255, 215, 0, 0.5);
+            --border-glass: rgba(255, 215, 0, 0.2);
+        }
+
+        .agent-header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 30px;
+        }
+
+        .grid-blocks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body class="theme-neon-cyber agent-theme">
+
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="grid-overlay"></div>
+        <div class="glow-orb orb-1" style="background: rgba(255, 215, 0, 0.1);"></div>
+        <div class="glow-orb orb-2" style="background: rgba(255, 215, 0, 0.15);"></div>
+    </div>
+
+    <div id="app-container">
+        <!-- VIEW: Agent Login -->
+        <section id="view-agent-auth" class="view active"
+            style="justify-content: center; align-items: center; display: flex; flex-grow: 1;">
+            <div class="auth-container glass-panel">
+                <h2 class="glow-text" style="color: var(--neon-primary)">AGENT HUB</h2>
+                <p class="subtitle">Manage Players & Commissions</p>
+
+                <form id="agent-login-form" class="auth-form active">
+                    <div class="input-group">
+                        <label>Agent Code</label>
+                        <input type="text" placeholder="Enter Agent ID" required id="agent-id">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="••••••••" required id="agent-pass">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-glow"
+                        style="width: 100%; border-color: var(--neon-primary); color: var(--bg-dark); background:var(--neon-primary);">LOGIN
+                        TO HUB</button>
+                    <div style="margin-top: 20px;">
+                        <a href="#"
+                            style="color: var(--text-muted); font-family: var(--font-ui); text-decoration: none;">Apply
+                            to become an Agent</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW: Agent Dashboard -->
+        <section id="view-agent-dash" class="view hidden">
+            <header class="agent-header glass-panel">
+                <h1 class="logo glow-text" style="color: var(--neon-primary)">AGENT SECURE PORTAL</h1>
+                <button class="btn btn-outline btn-sm" onclick="location.reload()"
+                    style="position: absolute; right: 20px; top: 25px;">Logout</button>
+            </header>
+
+            <div class="agent-layout">
+
+                <!-- Financial Overview -->
+                <div class="glass-panel" style="padding: 30px; margin-bottom: 20px; text-align: center;">
+                    <h3 style="color: var(--text-muted); margin-bottom: 10px;">Current Commission Balance</h3>
+                    <div class="glow-text"
+                        style="font-size: 3rem; font-family: var(--font-heading); color: var(--neon-primary); margin-bottom: 20px;">
+                        💎 45,200
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 15px;">
+                        <button class="btn btn-primary"
+                            style="border-color: var(--neon-primary); color: var(--bg-dark); background:var(--neon-primary);">Withdraw
+                            to Bank</button>
+                        <button class="btn btn-outline">Transfer to Player</button>
+                    </div>
+                </div>
+
+                <!-- Tools Grid -->
+                <div class="grid-blocks">
+                    <div class="glass-panel" style="padding: 20px;">
+                        <h3 style="margin-bottom: 15px; color: #00f0ff">👥 My Players</h3>
+                        <p class="subtitle" style="font-size: 0.9rem;">Total Active: 142</p>
+                        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">Player List</button>
+                        <button class="btn btn-secondary" style="width: 100%;">Create New Player Account</button>
+                    </div>
+
+                    <div class="glass-panel" style="padding: 20px;">
+                        <h3 style="margin-bottom: 15px; color: #00f0ff">💰 Top-up Console</h3>
+                        <div class="input-group" style="margin-bottom: 10px;">
+                            <input type="text" placeholder="Player ID">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 10px;">
+                            <input type="number" placeholder="💎 Amount">
+                        </div>
+                        <button class="btn btn-outline" style="width: 100%; border-color: #00f0ff; color: #00f0ff;">Send
+                            Diamonds</button>
+                    </div>
+
+                    <div class="glass-panel" style="padding: 20px;">
+                        <h3 style="margin-bottom: 15px; color: #00f0ff">📊 Reports</h3>
+                        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">Daily Commission
+                            Log</button>
+                        <button class="btn btn-secondary" style="width: 100%;">Deposit History</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.getElementById('agent-login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('agent-id').value;
+            const pass = document.getElementById('agent-pass').value;
+            // Dummy authentication
+            if (id && pass) {
+                document.getElementById('view-agent-auth').classList.add('hidden');
+                document.getElementById('view-agent-dash').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOD PANEL - Admin Login</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Admin Specific Overrides */
+        body {
+            background-color: #050505;
+        }
+
+        .admin-theme {
+            --neon-primary: #ff003c;
+            /* Cyber Red dominant for Admin */
+            --shadow-glow: 0 0 15px rgba(255, 0, 60, 0.5);
+            --border-glass: rgba(255, 0, 60, 0.2);
+        }
+
+        .admin-header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body class="theme-neon-cyber admin-theme">
+
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="grid-overlay"></div>
+        <div class="glow-orb orb-1" style="background: rgba(255, 0, 60, 0.2);"></div>
+        <div class="glow-orb orb-2" style="background: rgba(255, 0, 60, 0.3);"></div>
+    </div>
+
+    <div id="app-container">
+        <!-- VIEW: Admin Login -->
+        <section id="view-admin-auth" class="view active"
+            style="justify-content: center; align-items: center; display: flex; flex-grow: 1;">
+            <div class="auth-container glass-panel">
+                <h2 class="glow-text" style="color: var(--neon-primary)">GOD PANEL</h2>
+                <p class="subtitle">Authorized Access Only</p>
+
+                <form id="admin-login-form" class="auth-form active">
+                    <div class="input-group">
+                        <label>Admin ID</label>
+                        <input type="text" placeholder="Enter Admin credentials" required id="admin-id">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="••••••••" required id="admin-pass">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-glow"
+                        style="width: 100%; border-color: var(--neon-primary); color: var(--neon-primary)">OVERRIDE
+                        PROTOCOL</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW: Admin Dashboard -->
+        <section id="view-admin-dash" class="view hidden">
+            <header class="admin-header glass-panel">
+                <h1 class="logo glow-text" style="color: var(--neon-primary)">GOD PANEL LIVE</h1>
+                <button class="btn btn-outline btn-sm" onclick="location.reload()"
+                    style="position: absolute; right: 20px; top: 25px;">Logout</button>
+            </header>
+
+            <div class="admin-layout glass-panel" style="padding: 30px;">
+                <div class="admin-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+
+                    <div class="admin-card glass-panel" style="padding: 20px;">
+                        <h3 style="margin-bottom: 20px; color: var(--neon-primary)">🎮 Game Engine</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn btn-outline" style="border-color: #00f0ff; color:#00f0ff">Start New Game
+                                Room</button>
+                            <button class="btn btn-primary"
+                                style="border-color: var(--neon-primary); color: var(--neon-primary)">Manual Number
+                                Draw</button>
+                            <button class="btn btn-secondary">Toggle AI Auto-Caller</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-card glass-panel" style="padding: 20px;">
+                        <h3 style="margin-bottom: 20px; color: var(--neon-gold)">🏆 Pattern Builder</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn btn-secondary">Edit Winning Patterns</button>
+                            <button class="btn btn-secondary">Set Prize Pool</button>
+                            <p class="subtitle" style="font-size:0.9rem; margin-top:10px;">Current: Early 5, Rows, Full
+                                House</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-card glass-panel" style="padding: 20px;">
+                        <h3 style="margin-bottom: 20px; color: #bc13fe">🛡️ Monitoring & Logs</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="stat-box"
+                                style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px; display:flex; justify-content:space-between;">
+                                <span>Active Players:</span> <strong style="color:#00f0ff">1,240</strong>
+                            </div>
+                            <div class="stat-box"
+                                style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px; display:flex; justify-content:space-between;">
+                                <span>Total Agents:</span> <strong style="color:#00f0ff">45</strong>
+                            </div>
+                            <button class="btn btn-secondary" style="margin-top: 10px;">View Transaction Logs</button>
+                            <button class="btn btn-secondary"
+                                style="border-color: var(--neon-primary); color: var(--neon-primary)">Ban Hammer /
+                                Player Management</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('admin-id').value;
+            const pass = document.getElementById('admin-pass').value;
+            // Dummy authentication
+            if (id && pass) {
+                document.getElementById('view-admin-auth').classList.add('hidden');
+                document.getElementById('view-admin-dash').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>
