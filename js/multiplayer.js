@@ -1,77 +1,203 @@
 /**
- * SIANG TAMBOLA - Multiplayer & Sync System
- * Handles interactions with Firebase Realtime Database
+ * SIANG TAMBOLA – Multiplayer Sync Module v3.0 (Phase 3)
+ * Firebase Realtime Database sync for:
+ *  - Game state (called numbers, current number, game active)
+ *  - Claims (player claim submissions)
+ *  - Player presence
  */
 
-import { db, ref, onValue, update, set } from './firebase-config.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, update, get, serverTimestamp, remove }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { SFX } from './sounds.js';
 
-class MultiplayerSystem {
-    constructor() {
-        this.roomId = "global-room-1"; // Default room for Phase 3
-        this.playerId = "player-" + Math.floor(Math.random() * 10000); // Temporary guest ID
-        this.roomRef = null;
-    }
+const firebaseConfig = {
+    apiKey: "AIzaSyCpikeD9xU8yugpeA67rL66awScd455uV4",
+    authDomain: "siang-tambola.firebaseapp.com",
+    databaseURL: "https://siang-tambola-default-rtdb.firebaseio.com",
+    projectId: "siang-tambola",
+    storageBucket: "siang-tambola.firebasestorage.app",
+    messagingSenderId: "228062529046",
+    appId: "1:228062529046:web:caef7d77a7b0b2f4d65737"
+};
 
-    joinRoom(roomId) {
-        console.log(`[Sync] Joining Room ${roomId}...`);
-        this.roomId = roomId;
-        this.roomRef = ref(db, `rooms/${this.roomId}`);
+let app, db, auth;
+try {
+    app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    auth = getAuth(app);
+} catch (e) { console.warn('Firebase already initialized'); }
 
-        // Listen for live number calls
-        const latestNumberRef = ref(db, `rooms/${this.roomId}/currentNumber`);
-        onValue(latestNumberRef, (snapshot) => {
-            const num = snapshot.val();
-            if (num) {
-                this.handleNumberCalled(num);
-            }
-        });
+// Active game ID (set by admin when creating a game)
+let ACTIVE_GAME_ID = 'game_default';
 
-        // Listen for full reset/state
-        onValue(ref(db, `rooms/${this.roomId}/state`), (snapshot) => {
-            const state = snapshot.val();
-            if (state === 'reset') {
-                console.log("Room reset triggered!");
-                // Clear UI board in real app
-            }
-        });
-    }
+// ──────────────────────────────────────────────
+// ADMIN: Write game state to Firebase
+// ──────────────────────────────────────────────
 
-    handleNumberCalled(number) {
-        console.log(`[Sync] Number received from server: ${number}`);
-        if (window.gameEngine) {
-            window.gameEngine.updateBoardUI(number);
+/**
+ * Create a new game session in Firebase
+ */
+export async function createGame(gameId, config = {}) {
+    ACTIVE_GAME_ID = gameId;
+    await set(ref(db, `games/${gameId}`), {
+        active: true,
+        name: config.name || 'Tambola Room',
+        ticketPrice: config.ticketPrice || 100,
+        drawSpeed: config.drawSpeed || 10,
+        patterns: config.patterns || ['early5', 'topRow', 'midRow', 'botRow', 'fullHouse'],
+        calledNumbers: [],
+        currentNumber: null,
+        createdAt: serverTimestamp(),
+        totalCalled: 0,
+        wonPatterns: {}
+    });
+    console.log(`🎮 Game ${gameId} created`);
+}
+
+/**
+ * Admin draws a number and pushes to Firebase
+ * @param {number} number - the drawn number
+ */
+export async function adminDrawNumber(number) {
+    const gameRef = ref(db, `games/${ACTIVE_GAME_ID}`);
+    const snap = await get(gameRef);
+    const game = snap.val();
+    const existing = game?.calledNumbers || [];
+    if (existing.includes(number)) return; // Already called
+
+    await update(gameRef, {
+        currentNumber: number,
+        calledNumbers: [...existing, number],
+        totalCalled: (game?.totalCalled || 0) + 1,
+        lastUpdated: serverTimestamp()
+    });
+}
+
+/**
+ * Admin resets the game
+ */
+export async function adminResetGame() {
+    await update(ref(db, `games/${ACTIVE_GAME_ID}`), {
+        calledNumbers: [],
+        currentNumber: null,
+        totalCalled: 0,
+        wonPatterns: {},
+        lastUpdated: serverTimestamp()
+    });
+    // Clear all claims
+    await remove(ref(db, `games/${ACTIVE_GAME_ID}/claims`));
+}
+
+/**
+ * Admin approves or rejects a claim
+ */
+export async function adminResolveClaim(claimId, decision, prize = 0) {
+    await update(ref(db, `games/${ACTIVE_GAME_ID}/claims/${claimId}`), {
+        status: decision, // 'approved' | 'rejected'
+        prize,
+        resolvedAt: serverTimestamp()
+    });
+    if (decision === 'approved' && prize > 0) {
+        // Give prize to player's wallet
+        const claimSnap = await get(ref(db, `games/${ACTIVE_GAME_ID}/claims/${claimId}`));
+        const claim = claimSnap.val();
+        if (claim?.uid) {
+            const walletRef = ref(db, `users/${claim.uid}/wallet`);
+            const wSnap = await get(walletRef);
+            await set(walletRef, (wSnap.val() || 0) + prize);
         }
-    }
-
-    claimPattern(patternType) {
-        console.log(`[Sync] Attempting to claim ${patternType}...`);
-
-        // Write claim to database
-        const claimRef = ref(db, `rooms/${this.roomId}/claims/${this.playerId}_${Date.now()}`);
-        set(claimRef, {
-            player: this.playerId,
-            pattern: patternType,
-            timestamp: Date.now(),
-            status: "pending"
-        });
-
-        alert(`Claim request for ${patternType} sent to server for verification!`);
     }
 }
 
-window.syncSystem = new MultiplayerSystem();
+// ──────────────────────────────────────────────
+// PLAYER: Listen to game state + submit claims
+// ──────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Auto-join the global room for now
-    setTimeout(() => {
-        window.syncSystem.joinRoom(window.syncSystem.roomId);
-    }, 1000);
+/**
+ * Listen to the live game — number calls, current number
+ * @param {Function} onNumberCalled - called with (number, allCalledNumbers[])
+ * @param {Function} onGameReset - called when game is reset
+ */
+export function listenToGame(onNumberCalled, onGameReset) {
+    const gameRef = ref(db, `games/${ACTIVE_GAME_ID}`);
+    let prevCalledCount = 0;
 
-    // Bind Claim Buttons
-    document.querySelectorAll('.btn-claim').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            let pattern = e.target.innerText.split('\n')[0].trim();
-            window.syncSystem.claimPattern(pattern);
-        });
+    onValue(gameRef, (snap) => {
+        const game = snap.val();
+        if (!game) return;
+
+        const called = game.calledNumbers || [];
+        const current = game.currentNumber;
+
+        // Detect reset
+        if (called.length < prevCalledCount) {
+            prevCalledCount = 0;
+            if (onGameReset) onGameReset();
+            return;
+        }
+
+        // New number drawn
+        if (called.length > prevCalledCount && current) {
+            prevCalledCount = called.length;
+            if (onNumberCalled) onNumberCalled(current, called);
+        }
     });
-});
+}
+
+/**
+ * Listen to claims for admin panel
+ * @param {Function} callback - called with claims array
+ */
+export function listenToClaims(callback) {
+    const claimsRef = ref(db, `games/${ACTIVE_GAME_ID}/claims`);
+    onValue(claimsRef, (snap) => {
+        const data = snap.val() || {};
+        const claims = Object.entries(data).map(([id, claim]) => ({ id, ...claim }));
+        callback(claims.reverse()); // newest first
+    });
+}
+
+/**
+ * Player submits a claim
+ * @param {string} uid - player UID
+ * @param {string} playerName 
+ * @param {string} pattern - e.g. 'topRow'
+ * @param {number[]} matchedNumbers 
+ * @param {string} ticketId 
+ */
+export async function submitClaim(uid, playerName, pattern, matchedNumbers, ticketId) {
+    const claimsRef = ref(db, `games/${ACTIVE_GAME_ID}/claims`);
+    const claimData = {
+        uid,
+        playerName,
+        pattern,
+        matchedNumbers,
+        ticketId,
+        status: 'pending',
+        timestamp: serverTimestamp()
+    };
+    await push(claimsRef, claimData);
+    SFX.claimSubmit();
+}
+
+// ──────────────────────────────────────────────
+// PLAYER PRESENCE
+// ──────────────────────────────────────────────
+
+export function registerPresence(uid, name, gameId = ACTIVE_GAME_ID) {
+    const presenceRef = ref(db, `games/${gameId}/players/${uid}`);
+    set(presenceRef, { name, online: true, joinedAt: serverTimestamp() });
+    // Remove on disconnect
+    // onDisconnect(presenceRef).remove();
+}
+
+// ──────────────────────────────────────────────
+// SET ACTIVE GAME
+// ──────────────────────────────────────────────
+export function setActiveGame(gameId) {
+    ACTIVE_GAME_ID = gameId;
+}
+
+export { db, auth };

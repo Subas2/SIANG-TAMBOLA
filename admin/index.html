@@ -1754,13 +1754,135 @@
         window.admHandlePhoto = function (e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { document.getElementById('adm-emoji').style.display = 'none'; const i = document.getElementById('adm-photo-img'); i.src = ev.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); };
         window.openCreateGame = function () { document.getElementById('profile-overlay').classList.remove('open'); setTimeout(() => document.getElementById('game-overlay').classList.add('open'), 100); };
         window.closeCreateGame = function (e) { if (!e || e.target === document.getElementById('game-overlay')) document.getElementById('game-overlay').classList.remove('open'); };
-        window.launchGame = function () {
+    </script>
+
+    <!-- ===== PHASE 3: ADMIN FIREBASE INTEGRATION ===== -->
+    <script type="module">
+        import { TambolaBoard } from '../../js/tambola-engine.js';
+        import { createGame, adminDrawNumber, adminResetGame, adminResolveClaim, listenToClaims } from '../../js/multiplayer.js';
+        import { announceNumber, SFX } from '../../js/sounds.js';
+
+        const board = new TambolaBoard();
+        board.initUI('number-board');
+
+        let autoDrawInterval = null;
+        let currentGameId = 'game_' + Date.now();
+        let gameActive = false;
+
+        // ── Create Game (wires the modal Launch button) ──
+        window.launchGame = async function () {
             const name = document.getElementById('cg-name').value.trim() || 'Tambola Room 1';
-            const price = document.getElementById('cg-price').value || 100;
-            const speed = document.getElementById('cg-speed').value || 10;
-            closeCreateGame(null);
-            alert(`✅ Game "${name}" launched!\nTicket Price: ₹${price} | Draw every ${speed}s\nPlayers can now join!`);
+            const price = parseInt(document.getElementById('cg-price').value) || 100;
+            const speed = parseInt(document.getElementById('cg-speed').value) || 10;
+            const patterns = [];
+            document.querySelectorAll('#game-overlay input[type=checkbox]:checked').forEach((cb, i) => {
+                const p = ['early5', 'topRow', 'midRow', 'botRow', 'fullHouse'][i];
+                if (p) patterns.push(p);
+            });
+
+            currentGameId = 'game_' + Date.now();
+            await createGame(currentGameId, { name, ticketPrice: price, drawSpeed: speed, patterns });
+            window.closeCreateGame(null);
+            gameActive = true;
+            SFX.gameStart();
+            // Update speed slider if present
+            const slider = document.getElementById('speed-slider');
+            if (slider) slider.value = speed;
+            alert(`🎮 Game "${name}" is LIVE!\nRoom ID: ${currentGameId}\nPlayers can now join!`);
         };
+
+        // ── Manual Draw ──
+        window.p3DrawNumber = async function () {
+            if (!gameActive) { alert('Create a game first using the profile icon → Create New Game'); return; }
+            const num = board.drawNumber(false); // don't use local announce — we'll push to Firebase
+            if (!num) { alert('All 90 numbers have been drawn! Game over.'); return; }
+            await adminDrawNumber(num);
+            announceNumber(num);
+            // Update current number display
+            const disp = document.getElementById('current-number-display');
+            if (disp) disp.textContent = num;
+            const lastEl = document.getElementById('last-called-num');
+            if (lastEl) lastEl.textContent = num;
+        };
+
+        // Hook existing draw button
+        const drawBtn = document.getElementById('draw-btn') || document.querySelector('[onclick*="draw"]');
+        if (drawBtn) {
+            drawBtn.removeAttribute('onclick');
+            drawBtn.addEventListener('click', () => window.p3DrawNumber());
+        }
+
+        // ── Auto Draw Toggle ──
+        window.p3ToggleAutoDraw = function (enabled, speedSeconds) {
+            if (autoDrawInterval) { clearInterval(autoDrawInterval); autoDrawInterval = null; }
+            if (enabled) {
+                autoDrawInterval = setInterval(() => window.p3DrawNumber(), (speedSeconds || 10) * 1000);
+            }
+        };
+
+        // Hook speed slider
+        const slider = document.getElementById('speed-slider');
+        if (slider) slider.addEventListener('input', () => {
+            if (autoDrawInterval) window.p3ToggleAutoDraw(true, parseInt(slider.value));
+        });
+
+        // Hook AI auto toggle
+        const autoToggle = document.getElementById('toggle-ai-caller');
+        if (autoToggle) autoToggle.addEventListener('change', () => {
+            const speed = slider ? parseInt(slider.value) : 10;
+            window.p3ToggleAutoDraw(autoToggle.checked, speed);
+        });
+
+        // ── Game Reset ──
+        window.p3ResetGame = async function () {
+            if (!confirm('Reset game? This will clear all called numbers and claims.')) return;
+            board.reset();
+            await adminResetGame();
+            if (autoDrawInterval) { clearInterval(autoDrawInterval); autoDrawInterval = null; }
+            const disp = document.getElementById('current-number-display');
+            if (disp) disp.textContent = '?';
+            SFX.error();
+        };
+        const resetBtn = document.getElementById('reset-btn') || document.querySelector('[onclick*="reset"]');
+        if (resetBtn) { resetBtn.removeAttribute('onclick'); resetBtn.addEventListener('click', window.p3ResetGame); }
+
+        // ── Live Claims Listener ──
+        listenToClaims((claims) => {
+            const container = document.getElementById('claims-container');
+            if (!container) return;
+            if (claims.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px;font-size:0.9rem;">No claims yet</div>';
+                return;
+            }
+            container.innerHTML = claims.filter(c => c.status === 'pending').map(claim => `
+                <div class="claim-item" id="claim-${claim.id}">
+                    <div class="ci-info">
+                        <div class="ci-name">${claim.playerName || 'Player'}</div>
+                        <div class="ci-type">${claim.pattern?.toUpperCase() || 'CLAIM'} · ${(claim.matchedNumbers || []).join(', ')}</div>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <button class="ci-btn approve" onclick="p3ApproveClaim('${claim.id}', 500)">✓ Approve</button>
+                        <button class="ci-btn reject" onclick="p3RejectClaim('${claim.id}')">✗ Reject</button>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+        window.p3ApproveClaim = async function (claimId, prize) {
+            await adminResolveClaim(claimId, 'approved', prize);
+            SFX.claimApproved();
+            const el = document.getElementById(`claim-${claimId}`);
+            if (el) { el.style.background = 'rgba(16,185,129,0.15)'; el.style.border = '1px solid var(--green)'; }
+        };
+        window.p3RejectClaim = async function (claimId) {
+            await adminResolveClaim(claimId, 'rejected', 0);
+            SFX.claimRejected();
+            const el = document.getElementById(`claim-${claimId}`);
+            if (el) { el.style.opacity = '0.4'; }
+        };
+
+        // Expose for inline onclick
+        window.p3 = { board, gameActive: () => gameActive };
     </script>
 </body>
 

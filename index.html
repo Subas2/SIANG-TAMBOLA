@@ -1198,6 +1198,148 @@
         window.psSave = function () { const n = document.getElementById('ed-name').value.trim() || 'Elite Player'; document.getElementById('ps-display-name').textContent = n; psEdit(false); alert('✅ Profile updated!'); };
         window.handlePhoto = function (e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { document.getElementById('ps-emoji').style.display = 'none'; const i = document.getElementById('ps-photo-img'); i.src = ev.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); };
     </script>
+
+    <!-- ===== PHASE 3: FIREBASE LIVE GAME INTEGRATION ===== -->
+    <script type="module">
+        import { generateTicket, renderTicket, checkAllWins, TambolaBoard } from '../js/tambola-engine.js';
+        import { listenToGame, submitClaim, registerPresence } from '../js/multiplayer.js';
+        import { SFX } from '../js/sounds.js';
+        import { onAuth } from '../js/auth.js';
+
+        const calledNumbers = new Set();
+        let playerGrid = null;
+        let playerUID = null;
+        let playerName = 'Player';
+
+        // ── Auth state ──
+        onAuth(user => {
+            if (user) {
+                playerUID = user.uid;
+                playerName = user.displayName || user.phoneNumber || 'Player';
+                registerPresence(playerUID, playerName);
+                initTickets();
+            }
+        });
+
+        // ── Render valid tickets ──
+        function initTickets() {
+            const myList = document.getElementById('my-ticket-list');
+            const allList = document.getElementById('all-tickets-list');
+            if (myList) {
+                myList.innerHTML = '';
+                for (let i = 1; i <= 2; i++) {
+                    const grid = generateTicket();
+                    if (i === 1) playerGrid = grid; // save first ticket for claim checks
+                    const wrap = document.createElement('div');
+                    wrap.className = 'ticket-card';
+                    wrap.innerHTML = `<div class="ticket-header"><span style="font-weight:800">Ticket #${i}</span><span class="ticket-id">ST-${Math.random().toString(36).slice(2, 8).toUpperCase()}</span></div>`;
+                    const grid_el = document.createElement('div');
+                    grid_el.className = 'ticket-grid';
+                    wrap.appendChild(grid_el);
+                    // Render as 3-row grid
+                    grid.forEach(row => {
+                        row.forEach(num => {
+                            const cell = document.createElement('div');
+                            cell.className = num === 0 ? 't-cell empty' : 't-cell';
+                            cell.textContent = num || '';
+                            cell.dataset.num = num;
+                            if (num && calledNumbers.has(num)) cell.classList.add('marked');
+                            if (num) cell.addEventListener('click', () => { cell.classList.toggle('marked'); SFX.ticketMark(); });
+                            grid_el.appendChild(cell);
+                        });
+                    });
+                    myList.appendChild(wrap);
+                }
+            }
+            if (allList) {
+                allList.innerHTML = '';
+                for (let i = 3; i <= 7; i++) {
+                    const g = generateTicket();
+                    const wrap = document.createElement('div');
+                    wrap.className = 'ticket-card';
+                    wrap.innerHTML = `<div class="ticket-header"><span style="font-weight:800">Ticket #${i}</span><span class="ticket-id">ST-${Math.random().toString(36).slice(2, 8).toUpperCase()}</span></div>`;
+                    const grid_el = document.createElement('div');
+                    grid_el.className = 'ticket-grid';
+                    wrap.appendChild(grid_el);
+                    g.forEach(row => row.forEach(num => {
+                        const cell = document.createElement('div');
+                        cell.className = num === 0 ? 't-cell empty' : 't-cell';
+                        cell.textContent = num || '';
+                        if (num && calledNumbers.has(num)) cell.classList.add('marked');
+                        if (num) cell.addEventListener('click', () => { cell.classList.toggle('marked'); SFX.ticketMark(); });
+                        grid_el.appendChild(cell);
+                    }));
+                    allList.appendChild(wrap);
+                }
+            }
+        }
+
+        // ── Live Firebase number sync ──
+        listenToGame(
+            (newNumber, allCalled) => {
+                // Update called set
+                calledNumbers.clear();
+                allCalled.forEach(n => calledNumbers.add(n));
+
+                // Update big display
+                const disp = document.getElementById('current-number-display');
+                if (disp) { disp.textContent = newNumber; disp.classList.add('pulse'); setTimeout(() => disp.classList.remove('pulse'), 600); }
+
+                // Auto-mark cells on all ticket grids
+                document.querySelectorAll('.t-cell[data-num]').forEach(cell => {
+                    const num = parseInt(cell.dataset.num);
+                    if (calledNumbers.has(num)) cell.classList.add('marked');
+                });
+
+                // Update number board
+                const boardCell = document.getElementById(`cell-${newNumber}`);
+                if (boardCell) {
+                    document.querySelectorAll('.board-cell.latest').forEach(c => c.classList.remove('latest'));
+                    boardCell.classList.add('called', 'latest');
+                }
+            },
+            () => {
+                // Game reset
+                calledNumbers.clear();
+                document.querySelectorAll('.t-cell').forEach(c => c.classList.remove('marked'));
+                document.querySelectorAll('.board-cell').forEach(c => c.classList.remove('called', 'latest'));
+                const disp = document.getElementById('current-number-display');
+                if (disp) disp.textContent = '?';
+            }
+        );
+
+        // ── Claim button wiring ──
+        const CLAIM_BTNS = [
+            { id: 'btn-claim-early5', pattern: 'early5', label: 'Early 5' },
+            { id: 'btn-claim-top', pattern: 'topRow', label: 'Top Row' },
+            { id: 'btn-claim-mid', pattern: 'midRow', label: 'Middle Row' },
+            { id: 'btn-claim-bot', pattern: 'botRow', label: 'Bottom Row' },
+            { id: 'btn-claim-full', pattern: 'fullHouse', label: 'Full House' },
+        ];
+
+        CLAIM_BTNS.forEach(({ id, pattern, label }) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                if (!playerGrid) { alert('🎫 Buy a ticket first!'); return; }
+                const { win, matchedNumbers } = window.checkWin ? window.checkWin(playerGrid, calledNumbers, pattern) : { win: false };
+                if (!win) {
+                    SFX && SFX.error();
+                    alert(`❌ Not a valid ${label} claim yet. Keep playing!`);
+                    return;
+                }
+                if (!playerUID) {
+                    alert('Please login to submit a claim.');
+                    return;
+                }
+                submitClaim(playerUID, playerName, pattern, matchedNumbers, `p${playerUID}-ticket1`)
+                    .then(() => alert(`✅ ${label} claim submitted! Waiting for admin approval...`));
+            });
+        });
+
+        // Also expose for inline code
+        window.phase3 = { calledNumbers, generateTicket, checkAllWins };
+    </script>
 </body>
 
 </html>

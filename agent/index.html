@@ -1367,8 +1367,51 @@
         window.openProfile = function () { document.getElementById('profile-overlay').classList.add('open'); };
         window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) { document.getElementById('profile-overlay').classList.remove('open'); agEdit(false); } };
         window.agEdit = function (on) { document.getElementById('ag-view').style.display = on ? 'none' : 'block'; document.getElementById('ag-edit').style.display = on ? 'block' : 'none'; };
-        window.agSave = function () { const n = document.getElementById('ag-ed-name').value.trim() || 'Agent Rahul'; document.getElementById('ag-display-name').textContent = n; agEdit(false); alert('✅ Agent profile updated!'); };
+        window.agSave = function () { const n = document.getElementById('ag-ed-name').value.trim() || 'Agent Rahul'; document.getElementById('ag-display-name').textContent = n; agEdit(false); alert('\u2705 Agent profile updated!'); };
         window.agHandlePhoto = function (e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { document.getElementById('ag-emoji').style.display = 'none'; const i = document.getElementById('ag-photo-img'); i.src = ev.target.result; i.style.display = 'block'; }; r.readAsDataURL(f); };
+    </script>
+
+    <!-- ===== PHASE 3: AGENT FIREBASE INTEGRATION ===== -->
+    <script type="module">
+        import { listenToGame } from '../../js/multiplayer.js';
+        import { SFX } from '../../js/sounds.js';
+        import { onAuth } from '../../js/auth.js';
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const FB = { apiKey: "AIzaSyCpikeD9xU8yugpeA67rL66awScd455uV4", authDomain: "siang-tambola.firebaseapp.com", databaseURL: "https://siang-tambola-default-rtdb.firebaseio.com", projectId: "siang-tambola", appId: "1:228062529046:web:caef7d77a7b0b2f4d65737" };
+        let db;
+        try { const app = initializeApp(FB, 'agent'); db = getDatabase(app); } catch (e) { db = null; }
+
+        // Agent auth state listener
+        onAuth(user => {
+            if (!user || !db) return;
+            const uid = user.uid;
+            // Load wallet + commission from DB
+            onValue(ref(db, `users/${uid}`), snap => {
+                const data = snap.val() || {};
+                const earnEl = document.getElementById('ag-earnings');
+                if (earnEl) earnEl.textContent = '\u20b9' + (data.earnings || 12800).toLocaleString();
+                const rateEl = document.getElementById('ag-commission-rate');
+                if (rateEl) rateEl.textContent = (data.commissionRate || 8) + '%';
+            });
+        });
+
+        // Live game listener – play sound on draw, show number
+        listenToGame(
+            (newNumber, allCalled) => {
+                SFX.numberDraw();
+                const el = document.getElementById('agent-live-number');
+                if (el) el.textContent = newNumber;
+                const cnt = document.getElementById('agent-called-count');
+                if (cnt) cnt.textContent = allCalled.length + ' / 90';
+            },
+            () => {
+                const el = document.getElementById('agent-live-number');
+                if (el) el.textContent = '\u2014';
+            }
+        );
     </script>
 </body>
 
