@@ -2032,6 +2032,59 @@
             });
         }
     </script>
+
+    <!-- ===== PHASE 5: ADMIN LEADERBOARD + CHAT + PRIZEPOOL + LOBBY ===== -->
+    <script type="module">
+        import { getAllTimeLeaderboard, renderLeaderboard } from '../../js/leaderboard.js';
+        import { mountChat, sendMessage } from '../../js/chat.js';
+        import { listenToPrizePool, renderPrizePool, getPatternPrize, savePrizeConfig } from '../../js/prizepool.js';
+        import { listenToLobby, renderLobby, endRoom } from '../../js/lobby.js';
+
+        // -- Admin Leaderboard --
+        const lbContainer = document.getElementById('admin-leaderboard-container');
+        if (lbContainer) {
+            getAllTimeLeaderboard().then(data => renderLeaderboard(lbContainer, data));
+        }
+
+        // -- Admin Chat --
+        const chatContainer = document.getElementById('admin-chat-container');
+        if (chatContainer) {
+            mountChat(chatContainer, window.currentGameId || 'game_default', { uid: 'admin', name: 'Admin', role: 'admin' });
+        }
+
+        // -- Live Prize Pool for current game --
+        const ppContainer = document.getElementById('admin-prize-pool-container');
+        if (ppContainer) {
+            listenToPrizePool(window.currentGameId || 'game_default', (data) => {
+                renderPrizePool(ppContainer, data);
+            });
+        }
+
+        // -- Wire prize config save --
+        window.p5SavePrizeConfig = async function () {
+            const poolPct = parseInt(document.getElementById('prize-pool-pct')?.value) || 80;
+            await savePrizeConfig(window.currentGameId || 'game_default', poolPct);
+            window.showToast?.('Prize config saved!', 'game');
+        };
+
+        // -- Auto-fill prize on claim approval --
+        const origApprove = window.p3ApproveClaim;
+        window.p3ApproveClaim = async function (claimId, defaultPrize) {
+            const gameId = window.currentGameId || 'game_default';
+            const claimEl = document.getElementById(`claim-${claimId}`);
+            const pattern = claimEl?.querySelector('.ci-type')?.textContent?.split(' ')[0]?.toLowerCase() || 'fullHouse';
+            const autoPrize = await getPatternPrize(gameId, pattern) || defaultPrize;
+            if (origApprove) await origApprove(claimId, autoPrize);
+        };
+
+        // -- Room Lobby (Admin view: all rooms, end button) --
+        const lobbyContainer = document.getElementById('admin-lobby-container');
+        if (lobbyContainer) {
+            listenToLobby((rooms) => {
+                renderLobby(lobbyContainer, rooms, null, true);
+            }, true);
+        }
+    </script>
 </body>
 
 </html>

@@ -1467,6 +1467,74 @@
 
         window.phase4 = { showToast };
     </script>
+
+    <!-- ===== PHASE 5: LOBBY + LEADERBOARD + CHAT + PRIZE POOL ===== -->
+    <script type="module">
+        import { listenToLobby, renderLobby } from './js/lobby.js';
+        import { getAllTimeLeaderboard, getWeeklyLeaderboard, listenToLeaderboard, renderLeaderboard } from './js/leaderboard.js';
+        import { listenToPrizePool, renderPrizePool } from './js/prizepool.js';
+        import { mountChat } from './js/chat.js';
+        import { onAuth } from './js/auth.js';
+        import { setActiveGame } from './js/multiplayer.js';
+
+        let currentUser = null;
+        onAuth(user => { currentUser = user; });
+
+        // -- Lobby --
+        const lobbyContainer = document.getElementById('lobby-container');
+        if (lobbyContainer) {
+            listenToLobby((rooms) => {
+                renderLobby(lobbyContainer, rooms, (gameId, room) => {
+                    setActiveGame(gameId);
+                    window.activeGameId = gameId;
+                    document.querySelector('[data-tab="game"]')?.click();
+                    listenToPrizePool(gameId, (data) => {
+                        const ppc = document.getElementById('prize-pool-container');
+                        if (ppc) renderPrizePool(ppc, data, room.patterns);
+                    });
+                    const chatContainer = document.getElementById('chat-container');
+                    if (chatContainer && currentUser) {
+                        mountChat(chatContainer, gameId, { uid: currentUser.uid, name: currentUser.displayName || currentUser.phoneNumber || 'Player', role: 'player' });
+                    }
+                });
+            });
+        }
+
+        // -- Prize pool --
+        const ppContainer = document.getElementById('prize-pool-container');
+        if (ppContainer) listenToPrizePool(window.activeGameId || 'game_default', (data) => renderPrizePool(ppContainer, data));
+
+        // -- Leaderboard --
+        const lbContainer = document.getElementById('leaderboard-container');
+        let lbTab = 'alltime';
+        async function loadLeaderboard(tab) {
+            if (!lbContainer) return;
+            lbContainer.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">Loading...</div>';
+            const data = tab === 'weekly' ? await getWeeklyLeaderboard() : await getAllTimeLeaderboard();
+            renderLeaderboard(lbContainer, data, currentUser?.uid);
+        }
+        document.querySelectorAll('[data-lb-tab]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('[data-lb-tab]').forEach(b => b.style.opacity = '0.5');
+                btn.style.opacity = '1';
+                lbTab = btn.dataset.lbTab;
+                loadLeaderboard(lbTab);
+            });
+        });
+        document.querySelectorAll('[data-tab]').forEach(btn => {
+            btn.addEventListener('click', () => { if (btn.dataset.tab === 'leaderboard') loadLeaderboard(lbTab); });
+        });
+        listenToLeaderboard((data) => { if (lbContainer && lbTab === 'alltime') renderLeaderboard(lbContainer, data, currentUser?.uid); });
+
+        // -- Chat --
+        onAuth(user => {
+            const chatContainer = document.getElementById('chat-container');
+            if (!user || !chatContainer) return;
+            mountChat(chatContainer, window.activeGameId || 'game_default', { uid: user.uid, name: user.displayName || user.phoneNumber || 'Player', role: 'player' });
+        });
+
+        window.phase5 = { loadLeaderboard };
+    </script>
 </body>
 
 </html>
