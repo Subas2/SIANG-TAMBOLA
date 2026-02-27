@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIANG TAMBOLA - GOD LEVEL</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- PWA Setup -->
+    <meta name="theme-color" content="#0e0b16">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="theme-neon-cyber">
+    
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="grid-overlay"></div>
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container">
+        
+        <!-- Header / Nav -->
+        <header class="app-header glass-panel hidden" id="main-header">
+            <h1 class="logo glow-text">SIANG TAMBOLA</h1>
+            <div class="user-info">
+                <span id="user-wallet" class="wallet-badge">💎 0</span>
+                <button id="btn-profile" class="btn btn-outline">Profile</button>
+            </div>
+        </header>
+
+        <!-- Main Content Area (Views) -->
+        <main id="main-content">
+            
+            <!-- VIEW: Authentication (Login/Register) -->
+            <section id="view-auth" class="view active">
+                <div class="auth-container glass-panel">
+                    <h2 class="glow-text">GOD LEVEL MODE</h2>
+                    <p class="subtitle">Enter the ultimate Tambola experience</p>
+                    
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" data-target="login">Login</button>
+                        <button class="tab-btn" data-target="register">Register</button>
+                    </div>
+                    
+                    <form id="login-form" class="auth-form active">
+                        <div class="input-group">
+                            <label>Phone / Email</label>
+                            <input type="text" placeholder="Enter credentials" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-glow">ACTIVATE 🚀</button>
+                    </form>
+                    
+                    <form id="register-form" class="auth-form hidden">
+                        <!-- Registration fields -->
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Name" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Phone</label>
+                            <input type="tel" placeholder="Mobile Number" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="Create Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-glow">JOIN THE ELITE</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW: Lobby / Main Menu -->
+            <section id="view-lobby" class="view hidden">
+                <div class="lobby-grid">
+                    <div class="card glass-panel play-card">
+                        <h3>Join Live Game</h3>
+                        <p>Next game starts in: <span class="countdown">04:59</span></p>
+                        <button class="btn btn-primary btn-glow btn-lg" id="btn-join-room">PLAY NOW</button>
+                    </div>
+                    
+                    <div class="side-cards">
+                        <div class="card glass-panel minigame-card">
+                            <h3>Mini Games</h3>
+                            <p>Play while waiting</p>
+                            <div class="minigame-list">
+                                <button class="btn btn-secondary">🎰 Lucky Spin</button>
+                                <button class="btn btn-secondary">⚡ Flash Bonus</button>
+                            </div>
+                        </div>
+                        
+                        <div class="card glass-panel wallet-card">
+                            <h3>Wallet Hub</h3>
+                            <button class="btn btn-outline" onclick="app.showView('view-wallet')">Manage Funds 💎</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: Game Room -->
+            <section id="view-game" class="view hidden">
+                <div class="game-layout">
+                    <!-- Left: Board & Caller -->
+                    <div class="game-board-area glass-panel">
+                        <div class="caller-display">
+                            <div class="last-called">
+                                <span class="label">Last Called</span>
+                                <div class="number glow-text pulse">42</div>
+                            </div>
+                            <div class="history">
+                                <span>35</span>
+                                <span>12</span>
+                                <span>88</span>
+                                <span>7</span>
+                            </div>
+                        </div>
+                        <div class="tambola-board" id="tambola-board">
+                            <!-- Board 1-90 generated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Tickets & Claims -->
+                    <div class="game-tickets-area">
+                        <div class="claims-panel glass-panel">
+                            <h3>Winning Patterns</h3>
+                            <div class="claim-buttons">
+                                <button class="btn btn-claim">Early 5 <span class="prize">💎 500</span></button>
+                                <button class="btn btn-claim">Top Row <span class="prize">💎 300</span></button>
+                                <button class="btn btn-claim">Middle Row <span class="prize">💎 300</span></button>
+                                <button class="btn btn-claim">Bottom Row <span class="prize">💎 300</span></button>
+                                <button class="btn btn-claim highlight">Full House <span class="prize">💎 5000</span></button>
+                            </div>
+                        </div>
+                        <div class="my-tickets" id="my-tickets">
+                            <!-- Tickets injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: Wallet & Agent Hub -->
+            <section id="view-wallet" class="view hidden">
+                <div class="wallet-layout glass-panel">
+                    <button class="btn btn-icon btn-back" onclick="app.showView('view-lobby')">⬅ Back</button>
+                    <h2>Financial Hub</h2>
+                    <div class="balance-display">
+                        <div class="bal-box">
+                            <span class="label">Player Balance</span>
+                            <div class="amt">💎 4,500</div>
+                            <div class="actions">
+                                <button class="btn btn-sm btn-primary">Add</button>
+                                <button class="btn btn-sm btn-outline">Withdraw</button>
+                            </div>
+                        </div>
+                        <div class="bal-box agent-box hidden">
+                            <span class="label">Agent Commission</span>
+                            <div class="amt glow-text text-gold">💎 1,200</div>
+                            <button class="btn btn-sm btn-gold">Transfer to Wallet</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: Admin Panel -->
+            <section id="view-admin" class="view hidden">
+                <div class="admin-layout glass-panel">
+                    <h2>👑 GOD PANEL</h2>
+                    <div class="admin-grid">
+                        <div class="admin-card">
+                            <h3>Game Controls</h3>
+                            <button class="btn btn-primary" id="admin-start">Start Game</button>
+                            <button class="btn btn-secondary" id="admin-draw">Draw Manual</button>
+                            <button class="btn btn-outline" id="admin-auto">Toggle Auto-Draw</button>
+                        </div>
+                        <div class="admin-card">
+                            <h3>Pattern Builder</h3>
+                            <button class="btn btn-secondary">Visual Editor</button>
+                        </div>
+                        <div class="admin-card">
+                            <h3>Monitoring</h3>
+                            <button class="btn btn-secondary">Live Room (1.2k players)</button>
+                            <button class="btn btn-secondary">Economy & Logs</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/tambola-engine.js"></script>
+    <script type="module" src="js/multiplayer.js"></script>
+</body>
+</html>
