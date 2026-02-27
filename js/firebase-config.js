@@ -7,24 +7,24 @@ import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "your-project.firebaseapp.com",
-    databaseURL: "https://your-project.firebaseio.com",
-    projectId: "your-project",
-    storageBucket: "your-project.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:12345:web:abcd"
+    apiKey: "AIzaSyCpikeD9xU8yugpeA67rL66awScd455uV4",
+    authDomain: "siang-tambola.firebaseapp.com",
+    databaseURL: "https://siang-tambola-default-rtdb.firebaseio.com",
+    projectId: "siang-tambola",
+    storageBucket: "siang-tambola.firebasestorage.app",
+    messagingSenderId: "228062529046",
+    appId: "1:228062529046:web:caef7d77a7b0b2f4d65737",
+    measurementId: "G-7MC2PZTYGT"
 };
 
 // Initialize Firebase
 let app, db, auth;
 
 try {
-    // Uncomment these when config is added
-    // app = initializeApp(firebaseConfig);
-    // db = getDatabase(app);
-    // auth = getAuth(app);
-    console.log("Firebase initialized (Stub mode)");
+    app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    auth = getAuth(app);
+    console.log("🔥 Firebase Live Connection Established");
 } catch (e) {
     console.error("Firebase init error:", e);
 }
