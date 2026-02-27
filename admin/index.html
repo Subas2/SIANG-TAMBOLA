@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOD PANEL – SIANG TAMBOLA</title>
+    <title>GOD PANEL – Siang Tambola Admin</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
         *,
@@ -18,58 +18,66 @@
         }
 
         :root {
-            --red: #ff003c;
-            --cyan: #00f0ff;
-            --gold: #ffd700;
-            --purple: #bc13fe;
-            --bg: #07040f;
+            --bg: #0f0828;
+            --bg2: #150d38;
+            --card: #1e1248;
+            --card2: #251555;
+            --accent: #7c3aed;
+            --accent2: #6d28d9;
+            --neon: #8b5cf6;
+            --cyan: #06b6d4;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --red: #ef4444;
+            --orange: #f97316;
+            --text: #e2d9f3;
+            --muted: #7c6fa0;
+            --border: rgba(124, 58, 237, 0.25);
+            /* Admin red accent override */
+            --a-red: #ff003c;
+            --a-red-glow: rgba(255, 0, 60, 0.3);
         }
 
+        html,
         body {
-            font-family: 'Inter', sans-serif;
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
             background: var(--bg);
-            color: #fff;
-            min-height: 100vh;
+            color: var(--text);
             overflow-x: hidden;
         }
 
-        /* === BACKGROUND === */
-        .bg-fx {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
+        ::-webkit-scrollbar {
+            width: 4px;
         }
 
-        .bg-fx::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 0, 60, 0.25), transparent),
-                radial-gradient(ellipse 40% 40% at 90% 90%, rgba(188, 19, 254, 0.12), transparent);
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
         }
 
-        .grid-lines {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255, 0, 60, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 60, 0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
         }
 
-        /* === WRAPPER === */
-        #wrapper {
-            position: relative;
-            z-index: 1;
+        #app {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            position: relative;
         }
 
-        /* === LOGIN VIEW === */
-        #view-login {
+        @media (min-width: 481px) {
+            #app {
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* ---- LOGIN ---- */
+        .login-wrap {
             flex: 1;
             display: flex;
             align-items: center;
@@ -79,12 +87,12 @@
 
         .login-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 0, 60, 0.35);
             border-radius: 20px;
-            padding: 50px 40px;
-            box-shadow: 0 0 60px rgba(255, 0, 60, 0.15), inset 0 0 40px rgba(255, 0, 60, 0.03);
+            padding: 50px 36px;
+            box-shadow: 0 0 60px rgba(255, 0, 60, 0.12), inset 0 0 40px rgba(255, 0, 60, 0.03);
             backdrop-filter: blur(20px);
             position: relative;
             overflow: hidden;
@@ -97,41 +105,39 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, transparent, var(--red), var(--purple), var(--red), transparent);
+            background: linear-gradient(90deg, transparent, var(--a-red), var(--neon), var(--a-red), transparent);
         }
 
-        .login-card .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
+        .lc-logo {
+            font-size: 1.6rem;
             font-weight: 900;
             text-align: center;
-            color: var(--red);
-            text-shadow: 0 0 30px var(--red), 0 0 60px rgba(255, 0, 60, 0.4);
-            letter-spacing: 3px;
-            margin-bottom: 8px;
+            color: var(--a-red);
+            text-shadow: 0 0 30px var(--a-red);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
         }
 
-        .login-card .sub {
+        .lc-sub {
             text-align: center;
-            color: rgba(255, 255, 255, 0.35);
-            font-size: 0.85rem;
+            color: var(--muted);
+            font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 40px;
+            margin-bottom: 36px;
         }
 
         .field {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .field label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.45);
-            margin-bottom: 8px;
-            font-family: 'Rajdhani', sans-serif;
+            color: var(--muted);
+            margin-bottom: 7px;
         }
 
         .field input {
@@ -139,32 +145,32 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 0, 60, 0.25);
             border-radius: 10px;
-            padding: 14px 18px;
+            padding: 13px 16px;
             color: #fff;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
             outline: none;
             transition: all 0.3s;
+            font-family: 'Nunito', sans-serif;
         }
 
         .field input:focus {
-            border-color: var(--red);
+            border-color: var(--a-red);
             background: rgba(255, 0, 60, 0.07);
             box-shadow: 0 0 20px rgba(255, 0, 60, 0.15);
         }
 
         .login-btn {
             width: 100%;
-            margin-top: 10px;
-            padding: 16px;
+            margin-top: 8px;
+            padding: 15px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #ff003c, #cc0030);
+            background: linear-gradient(135deg, var(--a-red), #cc0030);
             color: #fff;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Nunito', sans-serif;
             font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 3px;
+            font-weight: 800;
+            letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 30px rgba(255, 0, 60, 0.4);
@@ -172,142 +178,212 @@
         }
 
         .login-btn:hover {
-            background: linear-gradient(135deg, #ff1a4d, #ff003c);
+            background: linear-gradient(135deg, #ff1a4d, var(--a-red));
             box-shadow: 0 4px 50px rgba(255, 0, 60, 0.7);
             transform: translateY(-2px);
         }
 
-        /* === DASHBOARD VIEW === */
-        #view-dash {
-            display: none;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .dash-header {
+        /* ---- HEADER ---- */
+        .app-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 40px;
+            padding: 14px 18px;
+            background: var(--bg2);
             border-bottom: 1px solid rgba(255, 0, 60, 0.2);
-            background: linear-gradient(180deg, rgba(255, 0, 60, 0.08), transparent);
-            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .dash-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+        .logo-text {
+            font-size: 1.15rem;
             font-weight: 900;
-            color: var(--red);
-            text-shadow: 0 0 20px rgba(255, 0, 60, 0.6);
-            letter-spacing: 3px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .dash-logo span {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.75rem;
-            display: block;
-            letter-spacing: 4px;
-            margin-top: 2px;
-            font-family: 'Rajdhani', sans-serif;
+        .logo-badge {
+            background: var(--a-red);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            font-style: normal;
         }
 
-        .logout-btn {
-            padding: 10px 24px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.5);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .hdr-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            transition: all 0.2s;
         }
 
-        .logout-btn:hover {
-            border-color: var(--red);
-            color: var(--red);
-            box-shadow: 0 0 15px rgba(255, 0, 60, 0.3);
+        .icon-btn:hover {
+            background: var(--a-red);
+            border-color: var(--a-red);
         }
 
-        /* Stats bar */
+        .logout-pill {
+            padding: 7px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .logout-pill:hover {
+            border-color: var(--a-red);
+            color: var(--a-red);
+            box-shadow: 0 0 12px rgba(255, 0, 60, 0.3);
+        }
+
+        /* ---- STATS BAR ---- */
         .stats-bar {
             display: flex;
-            gap: 1px;
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            overflow-x: auto;
         }
 
-        .stat-item {
-            flex: 1;
-            padding: 16px 24px;
-            background: rgba(255, 255, 255, 0.02);
+        .stats-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stat-pill {
+            flex-shrink: 0;
+            padding: 10px 18px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .stat-item .s-label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.35);
+        .sp-lbl {
+            font-size: 0.62rem;
+            color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            font-family: 'Rajdhani', sans-serif;
         }
 
-        .stat-item .s-val {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+        .sp-val {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
             font-weight: 700;
         }
 
-        .c-cyan {
-            color: var(--cyan);
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+        /* ---- TABS ---- */
+        .tab-bar {
+            display: flex;
+            background: var(--bg2);
+            padding: 6px 14px;
+            gap: 4px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
         }
 
-        .c-gold {
-            color: var(--gold);
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        .tab-bar::-webkit-scrollbar {
+            display: none;
         }
 
-        .c-purple {
-            color: var(--purple);
-            text-shadow: 0 0 15px rgba(188, 19, 254, 0.6);
+        .tab-item {
+            flex-shrink: 0;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            font-family: 'Nunito', sans-serif;
         }
 
-        .c-red {
-            color: var(--red);
-            text-shadow: 0 0 15px rgba(255, 0, 60, 0.6);
+        .tab-item.active {
+            background: rgba(255, 0, 60, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 0, 60, 0.3);
         }
 
-        /* Main Grid */
-        .dash-body {
-            padding: 30px 40px;
+        /* ---- PAGES ---- */
+        .page {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            padding: 14px;
+            overflow-y: auto;
             flex: 1;
         }
 
-        .dash-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+        .page.active {
+            display: flex;
         }
 
-        /* Panel Cards */
-        .panel {
-            background: rgba(255, 255, 255, 0.025);
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ---- CARDS ---- */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 16px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .panel::before {
+        .card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -316,86 +392,264 @@
             height: 2px;
         }
 
-        .panel:hover {
-            transform: translateY(-4px);
+        .card.red-top::before {
+            background: linear-gradient(90deg, transparent, var(--a-red), transparent);
         }
 
-        .panel.red-panel::before {
-            background: linear-gradient(90deg, transparent, var(--red), transparent);
-        }
-
-        .panel.red-panel {
-            box-shadow: 0 4px 30px rgba(255, 0, 60, 0.1);
-        }
-
-        .panel.red-panel:hover {
-            box-shadow: 0 16px 50px rgba(255, 0, 60, 0.25);
-            border-color: rgba(255, 0, 60, 0.3);
-        }
-
-        .panel.gold-panel::before {
+        .card.gold-top::before {
             background: linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-        .panel.gold-panel {
-            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.08);
+        .card.cyan-top::before {
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
         }
 
-        .panel.gold-panel:hover {
-            box-shadow: 0 16px 50px rgba(255, 215, 0, 0.2);
-            border-color: rgba(255, 215, 0, 0.3);
+        .card.green-top::before {
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
         }
 
-        .panel.purple-panel::before {
-            background: linear-gradient(90deg, transparent, var(--purple), transparent);
+        .card.purple-top::before {
+            background: linear-gradient(90deg, transparent, var(--neon), transparent);
         }
 
-        .panel.purple-panel {
-            box-shadow: 0 4px 30px rgba(188, 19, 254, 0.08);
+        /* ---- QUICK ACTIONS ---- */
+        .qa-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
 
-        .panel.purple-panel:hover {
-            box-shadow: 0 16px 50px rgba(188, 19, 254, 0.2);
-            border-color: rgba(188, 19, 254, 0.3);
+        .qa-item {
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.25s;
         }
 
-        .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
+        .qa-item:hover {
+            background: rgba(255, 0, 60, 0.12);
+            border-color: rgba(255, 0, 60, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .qa-icon {
+            font-size: 1.4rem;
+        }
+
+        .qa-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        /* ---- GAME CONTROL ---- */
+        .live-ctrl {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .live-circle-wrap {
+            position: relative;
+            width: 110px;
+            height: 110px;
+        }
+
+        .live-circle-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .live-circle-svg circle.track {
+            fill: none;
+            stroke: rgba(255, 0, 60, 0.15);
+            stroke-width: 5;
+        }
+
+        .live-circle-svg circle.progress {
+            fill: none;
+            stroke: url(#adminGrad);
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-dasharray: 313;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .live-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .live-lbl {
+            font-size: 0.6rem;
+            font-weight: 800;
             letter-spacing: 2px;
+            color: var(--muted);
             text-transform: uppercase;
-            margin-bottom: 22px;
+        }
+
+        .live-num {
+            font-size: 2rem;
+            font-weight: 900;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            line-height: 1;
+        }
+
+        /* Draw button */
+        .draw-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--a-red), #cc0030);
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 0, 60, 0.5);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .draw-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(255, 0, 60, 0.7);
+        }
+
+        .draw-btn:active {
+            transform: scale(0.96);
+        }
+
+        .draw-btn span {
+            font-size: 0.55rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* Speed control */
+        .speed-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            background: var(--card2);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
         }
 
-        .panel-title .icon {
-            font-size: 1.1rem;
+        .speed-row label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .speed-row input[type=range] {
+            flex: 1;
+            accent-color: var(--a-red);
+        }
+
+        .speed-val {
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--a-red);
+            width: 30px;
+            text-align: right;
+        }
+
+        /* Number Board */
+        .number-board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+        }
+
+        .nb-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: var(--card2);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: default;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nb-cell.called {
+            background: linear-gradient(135deg, var(--a-red), #cc0030);
+            color: #fff;
+            border-color: rgba(255, 0, 60, 0.5);
+            box-shadow: 0 0 8px rgba(255, 0, 60, 0.4);
+        }
+
+        .nb-cell.latest {
+            background: linear-gradient(135deg, #ff003c, #ff6b00);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.7);
+            transform: scale(1.1);
+            z-index: 2;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0
+            }
+
+            70% {
+                transform: scale(1.2)
+            }
+
+            100% {
+                transform: scale(1.1)
+            }
+        }
+
+        .nb-cell.latest {
+            animation: pop 0.4s ease forwards;
         }
 
         /* Buttons */
         .g-btn {
             width: 100%;
-            padding: 13px 20px;
+            padding: 13px 16px;
             border-radius: 10px;
             border: 1px solid;
             background: transparent;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .g-btn:last-child {
@@ -406,58 +660,69 @@
             border-color: rgba(255, 0, 60, 0.4);
             color: #fff;
             background: linear-gradient(135deg, rgba(255, 0, 60, 0.6), rgba(200, 0, 40, 0.7));
-            box-shadow: 0 4px 20px rgba(255, 0, 60, 0.3);
+            box-shadow: 0 3px 15px rgba(255, 0, 60, 0.25);
         }
 
         .g-btn.red:hover {
-            background: linear-gradient(135deg, #ff003c, #cc0030);
-            box-shadow: 0 4px 35px rgba(255, 0, 60, 0.6);
-            transform: scale(1.01);
+            background: linear-gradient(135deg, var(--a-red), #cc0030);
+            box-shadow: 0 3px 30px rgba(255, 0, 60, 0.5);
         }
 
         .g-btn.cyan {
-            border-color: rgba(0, 240, 255, 0.35);
+            border-color: rgba(6, 182, 212, 0.35);
             color: var(--cyan);
-            background: rgba(0, 240, 255, 0.05);
+            background: rgba(6, 182, 212, 0.05);
         }
 
         .g-btn.cyan:hover {
-            background: rgba(0, 240, 255, 0.12);
+            background: rgba(6, 182, 212, 0.12);
             border-color: var(--cyan);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
             color: #fff;
         }
 
         .g-btn.gold {
-            border-color: rgba(255, 215, 0, 0.35);
+            border-color: rgba(245, 158, 11, 0.35);
             color: var(--gold);
-            background: rgba(255, 215, 0, 0.05);
+            background: rgba(245, 158, 11, 0.05);
         }
 
         .g-btn.gold:hover {
-            background: rgba(255, 215, 0, 0.12);
+            background: rgba(245, 158, 11, 0.12);
             border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            color: #fff;
+        }
+
+        .g-btn.green {
+            border-color: rgba(16, 185, 129, 0.35);
+            color: var(--green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .g-btn.green:hover {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: var(--green);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
             color: #fff;
         }
 
         .g-btn.purple {
-            border-color: rgba(188, 19, 254, 0.35);
-            color: var(--purple);
-            background: rgba(188, 19, 254, 0.05);
+            border-color: rgba(139, 92, 246, 0.35);
+            color: var(--neon);
+            background: rgba(139, 92, 246, 0.05);
         }
 
         .g-btn.purple:hover {
-            background: rgba(188, 19, 254, 0.12);
-            border-color: var(--purple);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+            background: rgba(139, 92, 246, 0.12);
+            border-color: var(--neon);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
             color: #fff;
         }
 
         .g-btn.ghost {
             border-color: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            background: transparent;
+            color: var(--muted);
         }
 
         .g-btn.ghost:hover {
@@ -466,71 +731,270 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Ruleset box */
-        .ruleset-box {
-            margin-top: 14px;
+        /* ---- CLAIM QUEUE ---- */
+        .claim-item {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 14px 16px;
-            background: rgba(255, 215, 0, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .ci-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .ci-player {
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .ci-pattern {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .ci-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .ci-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .ci-btn.approve {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .ci-btn.reject {
+            background: var(--card);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            color: var(--a-red);
+        }
+
+        .ci-btn:hover {
+            opacity: 0.85;
+            transform: scale(0.97);
+        }
+
+        /* ---- PLAYER LIST ---- */
+        .player-item {
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .pi-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .pi-name {
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .pi-sub {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .pi-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .pi-badge.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .pi-badge.banned {
+            background: rgba(255, 0, 60, 0.12);
+            color: var(--a-red);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+        }
+
+        /* ---- WALLET ROWS ---- */
+        .wallet-row {
+            background: var(--card2);
             border-radius: 10px;
-            border-left: 3px solid var(--gold);
-        }
-
-        .ruleset-box .rl {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.35);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-        }
-
-        .ruleset-box .rv {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        /* Security stat rows */
-        .sec-stat {
+            padding: 14px 16px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.05rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .sec-stat .label {
-            color: rgba(255, 255, 255, 0.45);
+        .wr-label {
+            font-size: 0.85rem;
+            color: var(--muted);
         }
 
-        .sec-stat .val {
+        .wr-val {
+            font-family: 'Poppins', sans-serif;
             font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        @media (max-width: 900px) {
-            .dash-grid {
-                grid-template-columns: 1fr;
-            }
+        /* ---- TOGGLE ---- */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
 
-            .dash-header {
-                padding: 16px 20px;
-            }
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
 
-            .dash-body {
-                padding: 20px;
-            }
+        .toggle-lbl {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
 
-            .stats-bar {
-                flex-wrap: wrap;
-            }
+        .toggle-sub {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: '';
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked+.slider {
+            background: var(--a-red);
+            box-shadow: 0 0 10px rgba(255, 0, 60, 0.4);
+        }
+
+        input:checked+.slider::before {
+            transform: translateX(20px);
+        }
+
+        /* ---- BOTTOM NAV ---- */
+        .bottom-nav {
+            display: flex;
+            background: var(--bg2);
+            border-top: 1px solid rgba(255, 0, 60, 0.15);
+            padding: 8px 0 4px;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .bnav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 5px 0;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .bnav-item .bi-icon {
+            font-size: 1.2rem;
+        }
+
+        .bnav-item .bi-label {
+            font-size: 0.6rem;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .bnav-item.active .bi-label {
+            color: var(--a-red);
+        }
+
+        .bnav-item.active .bi-icon {
+            filter: drop-shadow(0 0 6px var(--a-red));
+        }
+
+        /* Colors */
+        .c-red {
+            color: var(--a-red);
+        }
+
+        .c-cyan {
+            color: var(--cyan);
+        }
+
+        .c-gold {
+            color: var(--gold);
+        }
+
+        .c-green {
+            color: var(--green);
+        }
+
+        .c-purple {
+            color: var(--neon);
         }
 
         .hidden {
@@ -540,142 +1004,453 @@
 </head>
 
 <body>
-    <div class="bg-fx">
-        <div class="grid-lines"></div>
-    </div>
+    <div id="app">
 
-    <div id="wrapper">
-
-        <!-- === LOGIN === -->
-        <div id="view-login">
+        <!-- ===== LOGIN ===== -->
+        <div class="login-wrap" id="view-login">
             <div class="login-card">
-                <div class="logo">⚡ GOD PANEL</div>
-                <div class="sub">Authorized Access Only</div>
-
-                <form id="admin-login-form">
+                <div class="lc-logo">⚡ GOD PANEL</div>
+                <div class="lc-sub">Admin Command Center</div>
+                <form id="login-form">
                     <div class="field">
                         <label>Admin ID</label>
-                        <input type="text" id="admin-id" placeholder="Enter your admin credentials" required>
+                        <input type="text" id="admin-id" placeholder="Enter admin credentials" required>
                     </div>
                     <div class="field">
                         <label>Password</label>
                         <input type="password" id="admin-pass" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" class="login-btn">Override Protocol</button>
+                    <button type="submit" class="login-btn">🔓 Override Protocol</button>
                 </form>
             </div>
         </div>
 
-        <!-- === DASHBOARD === -->
-        <div id="view-dash">
+        <!-- ===== DASHBOARD ===== -->
+        <div id="view-dash" class="hidden" style="display:flex;flex-direction:column;min-height:100vh;">
+
             <!-- Header -->
-            <header class="dash-header">
-                <div class="dash-logo">
-                    ⚡ GOD PANEL LIVE
-                    <span>Siang Tambola Admin Command Center</span>
+            <header class="app-header">
+                <div class="logo-text">
+                    God Panel <div class="live-dot"></div>
+                    <span class="logo-badge">ADMIN</span>
                 </div>
-                <button class="logout-btn" onclick="location.reload()">Logout</button>
+                <div class="hdr-btns">
+                    <div class="icon-btn" title="Alerts">🔔</div>
+                    <button class="logout-pill" onclick="location.reload()">Logout</button>
+                </div>
             </header>
 
             <!-- Stats Bar -->
             <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="s-label">Active Players</div>
-                    <div class="s-val c-cyan">1,240</div>
+                <div class="stat-pill">
+                    <div class="sp-lbl">Players</div>
+                    <div class="sp-val c-cyan">1,240</div>
                 </div>
-                <div class="stat-item">
-                    <div class="s-label">Active Rooms</div>
-                    <div class="s-val c-gold">3</div>
+                <div class="stat-pill">
+                    <div class="sp-lbl">Games</div>
+                    <div class="sp-val c-gold">3</div>
                 </div>
-                <div class="stat-item">
-                    <div class="s-label">Agent Nodes</div>
-                    <div class="s-val c-purple">45</div>
+                <div class="stat-pill">
+                    <div class="sp-lbl">Agents</div>
+                    <div class="sp-val c-purple">45</div>
                 </div>
-                <div class="stat-item">
-                    <div class="s-label">Claim Requests</div>
-                    <div class="s-val c-red">7</div>
+                <div class="stat-pill">
+                    <div class="sp-lbl">Claims</div>
+                    <div class="sp-val c-red">7</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="sp-lbl">Revenue</div>
+                    <div class="sp-val c-green">₹24K</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tab-bar">
+                <button class="tab-item active" onclick="switchTab('game', this)">Game Control</button>
+                <button class="tab-item" onclick="switchTab('claims', this)">Claims 🔥</button>
+                <button class="tab-item" onclick="switchTab('players', this)">Players</button>
+                <button class="tab-item" onclick="switchTab('wallet', this)">Revenue</button>
+                <button class="tab-item" onclick="switchTab('settings', this)">Settings</button>
+            </div>
+
+            <!-- ===== PAGE: GAME CONTROL ===== -->
+            <div class="page active" id="page-game">
+
+                <!-- Quick Admin Actions -->
+                <div class="card red-top">
+                    <div class="section-title">⚡ Quick Actions</div>
+                    <div class="qa-grid">
+                        <div class="qa-item" onclick="initRoom()">
+                            <div class="qa-icon">🚀</div>
+                            <div class="qa-label">New Game Room</div>
+                        </div>
+                        <div class="qa-item" onclick="toggleAI()">
+                            <div class="qa-icon">🤖</div>
+                            <div class="qa-label">AI Auto Caller</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="qa-icon">🎫</div>
+                            <div class="qa-label">Issue Tickets</div>
+                        </div>
+                        <div class="qa-item" onclick="switchTab('claims', null)">
+                            <div class="qa-icon">✅</div>
+                            <div class="qa-label">Review Claims</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="qa-icon">📢</div>
+                            <div class="qa-label">Announce</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="qa-icon">🛑</div>
+                            <div class="qa-label">End Game</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Draw Control -->
+                <div class="card gold-top">
+                    <div class="section-title">🎯 Live Draw Engine</div>
+
+                    <div class="live-ctrl">
+                        <!-- Number Circle -->
+                        <div class="live-circle-wrap">
+                            <svg class="live-circle-svg" viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="adminGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#ff003c" />
+                                        <stop offset="100%" style="stop-color:#f97316" />
+                                    </linearGradient>
+                                </defs>
+                                <circle class="track" cx="50" cy="50" r="44" />
+                                <circle class="progress" id="admin-arc" cx="50" cy="50" r="44" />
+                            </svg>
+                            <div class="live-center">
+                                <div class="live-lbl">CALLED</div>
+                                <div class="live-num" id="admin-live-num">—</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;flex-direction:column;gap:12px;align-items:center;">
+                            <!-- Manual Draw -->
+                            <button class="draw-btn" id="btn-draw" onclick="manualDraw()">
+                                🎯 <span>DRAW</span>
+                            </button>
+                            <!-- Called count -->
+                            <div style="text-align:center;">
+                                <div
+                                    style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
+                                    Called</div>
+                                <div style="font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;"
+                                    id="called-count">0/90</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Speed Slider -->
+                    <div class="speed-row">
+                        <label>Auto Speed</label>
+                        <input type="range" min="3" max="30" value="10" id="speed-slider"
+                            oninput="updateSpeed(this.value)">
+                        <div class="speed-val" id="speed-display">10s</div>
+                    </div>
+
+                    <!-- Number Board -->
+                    <div class="section-title" style="margin-top:4px;">📋 Number Board</div>
+                    <div class="number-board" id="admin-board"></div>
+                </div>
+
+                <!-- Pattern & Prize -->
+                <div class="card cyan-top">
+                    <div class="section-title">🏆 Pattern & Prize Pool</div>
+                    <button class="g-btn gold">🥇 Edit Winning Patterns</button>
+                    <button class="g-btn cyan">💰 Configure Prize Pool</button>
+                    <button class="g-btn purple">📎 Export Results PDF</button>
+                    <div
+                        style="margin-top:10px;padding:12px;background:var(--card2);border-radius:10px;border-left:3px solid var(--gold);">
+                        <div
+                            style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px;">
+                            Active Ruleset</div>
+                        <div style="font-weight:800;font-size:0.95rem;">Early 5 · Top Row · Mid Row · Bot Row · Full
+                            House</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Grid -->
-            <div class="dash-body">
-                <div class="dash-grid">
-
-                    <!-- Game Engine -->
-                    <div class="panel red-panel">
-                        <div class="panel-title" style="color: #ff4d6d;">
-                            <span class="icon">🎮</span>
-                            Game Engine Core
-                        </div>
-                        <button class="g-btn red" id="btn-draw-num">🎯 Execute Manual Draw</button>
-                        <button class="g-btn cyan" id="btn-start-game">⚡ Initialize New Game Room</button>
-                        <button class="g-btn ghost">🤖 Engage AI Auto-Caller</button>
+            <!-- ===== PAGE: CLAIMS ===== -->
+            <div class="page" id="page-claims">
+                <div class="card red-top">
+                    <div class="section-title">🔔 Pending Claims (7)</div>
+                    <div id="claims-list">
+                        <!-- Populated by JS -->
                     </div>
-
-                    <!-- Pattern Builder -->
-                    <div class="panel gold-panel">
-                        <div class="panel-title" style="color: var(--gold);">
-                            <span class="icon">🏆</span>
-                            Pattern Constructor
-                        </div>
-                        <button class="g-btn gold">⚙️ Edit Winning Patterns</button>
-                        <button class="g-btn gold">💰 Configure Prize Pool</button>
-                        <div class="ruleset-box">
-                            <div class="rl">Active Ruleset</div>
-                            <div class="rv">Early 5 · Rows · Full House</div>
-                        </div>
-                    </div>
-
-                    <!-- Security -->
-                    <div class="panel purple-panel">
-                        <div class="panel-title" style="color: var(--purple);">
-                            <span class="icon">🛡️</span>
-                            Security & Telemetry
-                        </div>
-                        <div class="sec-stat">
-                            <span class="label">Connections</span>
-                            <span class="val c-cyan">1,240</span>
-                        </div>
-                        <div class="sec-stat">
-                            <span class="label">Agent Nodes</span>
-                            <span class="val c-gold">45</span>
-                        </div>
-                        <button class="g-btn purple">📊 Network Logs</button>
-                        <button class="g-btn red">🔨 Ban Hammer</button>
-                    </div>
-
+                </div>
+                <div class="card green-top">
+                    <div class="section-title">✅ Approved Today</div>
+                    <div style="text-align:center;padding:20px;color:var(--muted);font-size:0.9rem;">Full House · Player
+                        #ST-4921 · ₹5,000</div>
                 </div>
             </div>
+
+            <!-- ===== PAGE: PLAYERS ===== -->
+            <div class="page" id="page-players">
+                <div class="card purple-top">
+                    <div class="section-title">👥 Live Players (1,240)</div>
+                    <div style="display:flex;gap:8px;margin-bottom:12px;">
+                        <input type="text" placeholder="🔍 Search player..."
+                            style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);outline:none;font-family:'Nunito',sans-serif;font-size:0.85rem;">
+                        <button class="g-btn red" style="width:auto;padding:10px 14px;margin:0;">Filter</button>
+                    </div>
+                    <div id="player-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: REVENUE ===== -->
+            <div class="page" id="page-wallet">
+                <div class="card gold-top">
+                    <div class="section-title">💰 Revenue Overview</div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Today's Revenue</div>
+                        <div class="wr-val c-green">₹24,500</div>
+                    </div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Total Prize Paid</div>
+                        <div class="wr-val c-red">₹18,000</div>
+                    </div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Net Profit</div>
+                        <div class="wr-val c-gold">₹6,500</div>
+                    </div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Agent Commissions</div>
+                        <div class="wr-val c-purple">₹2,200</div>
+                    </div>
+                </div>
+                <div class="card cyan-top">
+                    <div class="section-title">🏦 Withdrawal Requests</div>
+                    <button class="g-btn green">✅ Approve All Pending</button>
+                    <button class="g-btn red">📤 Export Transactions</button>
+                    <button class="g-btn cyan">🧾 Generate Report</button>
+                </div>
+                <div class="card purple-top">
+                    <div class="section-title">🤝 Agent Commissions</div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Agent A – Rahul</div>
+                        <div class="wr-val c-gold">₹820</div>
+                    </div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Agent B – Priya</div>
+                        <div class="wr-val c-gold">₹650</div>
+                    </div>
+                    <div class="wallet-row">
+                        <div class="wr-label">Agent C – Kumar</div>
+                        <div class="wr-val c-gold">₹730</div>
+                    </div>
+                    <button class="g-btn gold" style="margin-top:8px;">Pay All Commissions</button>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: SETTINGS ===== -->
+            <div class="page" id="page-settings">
+                <div class="card purple-top">
+                    <div class="section-title">⚙️ Game Settings</div>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-lbl">AI Auto Caller</div>
+                            <div class="toggle-sub">Automatically draw numbers</div>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="ai-toggle"><span class="slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-lbl">Anti Cheat Mode</div>
+                            <div class="toggle-sub">Server-side claim validation</div>
+                        </div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-lbl">Allow New Registrations</div>
+                            <div class="toggle-sub">Players can join mid-game</div>
+                        </div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-lbl">Sound Alerts</div>
+                            <div class="toggle-sub">Play number call sounds</div>
+                        </div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-lbl">Maintenance Mode</div>
+                            <div class="toggle-sub">Lock game for all players</div>
+                        </div>
+                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                    </div>
+                </div>
+                <div class="card red-top">
+                    <div class="section-title">🛡️ Security & Access</div>
+                    <button class="g-btn red">🔨 Ban Hammer – Player Management</button>
+                    <button class="g-btn orange"
+                        style="--orange:#f97316;border-color:rgba(249,115,22,0.4);color:#f97316;">🚨 View Suspicious
+                        Activity Log</button>
+                    <button class="g-btn ghost">🔑 Change Admin Password</button>
+                    <button class="g-btn ghost">📋 View Full Audit Trail</button>
+                </div>
+            </div>
+
+            <!-- Bottom Nav -->
+            <nav class="bottom-nav">
+                <button class="bnav-item active" onclick="switchTab('game', null, this)">
+                    <div class="bi-icon">🎮</div>
+                    <div class="bi-label">Game</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('claims', null, this)">
+                    <div class="bi-icon">✅</div>
+                    <div class="bi-label">Claims</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('players', null, this)">
+                    <div class="bi-icon">👥</div>
+                    <div class="bi-label">Players</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('wallet', null, this)">
+                    <div class="bi-icon">💰</div>
+                    <div class="bi-label">Revenue</div>
+                </button>
+                <button class="bnav-item" onclick="switchTab('settings', null, this)">
+                    <div class="bi-icon">⚙️</div>
+                    <div class="bi-label">Settings</div>
+                </button>
+            </nav>
         </div><!-- /view-dash -->
-
-    </div><!-- /wrapper -->
+    </div><!-- /app -->
 
     <script type="module">
-        import { db, ref, set } from '../js/firebase-config.js';
-        const ROOM_ID = "global-room-1";
+        import { db, ref, set, onValue } from '../js/firebase-config.js';
+        const ROOM_ID = 'global-room-1';
 
-        document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+        // ---- LOGIN ----
+        document.getElementById('login-form').addEventListener('submit', e => {
             e.preventDefault();
-            const id = document.getElementById('admin-id').value;
-            const pass = document.getElementById('admin-pass').value;
-            if (id && pass) {
+            if (document.getElementById('admin-id').value && document.getElementById('admin-pass').value) {
                 document.getElementById('view-login').classList.add('hidden');
-                document.getElementById('view-dash').style.display = 'flex';
+                document.getElementById('view-dash').classList.remove('hidden');
+                buildBoard(); populateClaims(); populatePlayers();
             }
         });
 
-        document.getElementById('btn-start-game').addEventListener('click', () => {
+        // ---- TABS ----
+        window.switchTab = function (tab, tabEl, navEl) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + tab).classList.add('active');
+            if (tabEl) { document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); tabEl.classList.add('active'); }
+            if (navEl) { document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active')); navEl.classList.add('active'); }
+        };
+
+        // ---- BOARD ----
+        let calledNums = new Set(), latestNum = null, calledCount = 0;
+        function buildBoard() {
+            const board = document.getElementById('admin-board');
+            board.innerHTML = '';
+            for (let i = 1; i <= 90; i++) {
+                const c = document.createElement('div');
+                c.className = 'nb-cell'; c.id = 'anb-' + i; c.textContent = i;
+                board.appendChild(c);
+            }
+        }
+
+        function showNum(num) {
+            if (latestNum) {
+                const p = document.getElementById('anb-' + latestNum);
+                if (p) { p.classList.remove('latest'); p.classList.add('called'); }
+            }
+            calledNums.add(num); latestNum = num; calledCount++;
+            const c = document.getElementById('anb-' + num);
+            if (c) c.classList.add('latest');
+            document.getElementById('admin-live-num').textContent = num;
+            document.getElementById('called-count').textContent = calledCount + '/90';
+            const arc = document.getElementById('admin-arc');
+            const dash = 276; arc.style.strokeDashoffset = dash - (calledCount / 90) * dash;
+        }
+
+        // ---- FIREBASE LISTENER ----
+        onValue(ref(db, `rooms/${ROOM_ID}/currentNumber`), snap => {
+            const num = snap.val(); if (num) showNum(num);
+        });
+        onValue(ref(db, `rooms/${ROOM_ID}/state`), snap => {
+            if (snap.val() === 'reset') { calledNums.clear(); latestNum = null; calledCount = 0; buildBoard(); document.getElementById('admin-live-num').textContent = '—'; document.getElementById('called-count').textContent = '0/90'; }
+        });
+
+        // ---- MANUAL DRAW ----
+        window.manualDraw = function () {
+            const available = [];
+            for (let i = 1; i <= 90; i++) if (!calledNums.has(i)) available.push(i);
+            if (!available.length) { alert('All 90 numbers have been called!'); return; }
+            const num = available[Math.floor(Math.random() * available.length)];
+            set(ref(db, `rooms/${ROOM_ID}/currentNumber`), num);
+        };
+
+        window.initRoom = function () {
             set(ref(db, `rooms/${ROOM_ID}/state`), 'reset');
             set(ref(db, `rooms/${ROOM_ID}/currentNumber`), null);
             set(ref(db, `rooms/${ROOM_ID}/calledNumbers`), []);
-            alert('✅ Game Room Initialized!');
-        });
+            alert('✅ Game Room Initialized & Reset!');
+        };
 
-        document.getElementById('btn-draw-num').addEventListener('click', () => {
-            const num = Math.floor(Math.random() * 90) + 1;
-            set(ref(db, `rooms/${ROOM_ID}/currentNumber`), num);
-            alert(`🎯 Number ${num} broadcasted to all players!`);
-        });
+        window.updateSpeed = v => document.getElementById('speed-display').textContent = v + 's';
+
+        let aiInterval = null;
+        window.toggleAI = function () {
+            const tog = document.getElementById('ai-toggle');
+            tog.checked = !tog.checked;
+            clearInterval(aiInterval);
+            if (tog.checked) {
+                const speed = parseInt(document.getElementById('speed-slider').value) * 1000;
+                aiInterval = setInterval(() => window.manualDraw(), speed);
+                alert('🤖 AI Auto-Caller Engaged! Drawing every ' + document.getElementById('speed-slider').value + 's');
+            } else { alert('⛔ AI Auto-Caller Stopped.'); }
+        };
+
+        // ---- CLAIMS ----
+        function populateClaims() {
+            const samples = [
+                { player: 'Player #ST-4382', pattern: 'Full House', time: '2 min ago' },
+                { player: 'Player #ST-1193', pattern: 'Early 5', time: '3 min ago' },
+                { player: 'Player #ST-7823', pattern: 'Top Row', time: '5 min ago' },
+                { player: 'Player #ST-2201', pattern: 'Bottom Row', time: '7 min ago' },
+            ];
+            const list = document.getElementById('claims-list');
+            samples.forEach(s => {
+                list.innerHTML += `<div class="claim-item">
+            <div class="ci-info"><div class="ci-player">${s.player}</div><div class="ci-pattern">${s.pattern} · ${s.time}</div></div>
+            <div class="ci-actions">
+                <button class="ci-btn approve" onclick="this.closest('.claim-item').remove()">✓ Approve</button>
+                <button class="ci-btn reject" onclick="this.closest('.claim-item').remove()">✗</button>
+            </div>
+        </div>`;
+            });
+        }
+
+        // ---- PLAYERS ----
+        function populatePlayers() {
+            const samples = [
+                { name: 'Rahul Sharma', sub: '3 tickets · ₹300', status: 'active' },
+                { name: 'Priya Verma', sub: '2 tickets · ₹200', status: 'active' },
+                { name: 'Amit Kumar', sub: '5 tickets · ₹500', status: 'active' },
+                { name: 'Suspicious_Bot', sub: '12 tickets · flagged', status: 'banned' },
+                { name: 'Sneha Patel', sub: '1 ticket · ₹100', status: 'active' },
+            ];
+            const list = document.getElementById('player-list');
+            samples.forEach(s => {
+                list.innerHTML += `<div class="player-item">
+            <div class="pi-info"><div class="pi-name">${s.name}</div><div class="pi-sub">${s.sub}</div></div>
+            <span class="pi-badge ${s.status}">${s.status === 'banned' ? '🚫 Banned' : '🟢 Live'}</span>
+        </div>`;
+            });
+        }
     </script>
 </body>
 
