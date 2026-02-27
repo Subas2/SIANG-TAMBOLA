@@ -80,9 +80,9 @@
                     <div class="admin-card glass-panel" style="padding: 20px;">
                         <h3 style="margin-bottom: 20px; color: var(--neon-primary)">🎮 Game Engine</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button class="btn btn-outline" style="border-color: #00f0ff; color:#00f0ff">Start New Game
-                                Room</button>
-                            <button class="btn btn-primary"
+                            <button class="btn btn-outline" id="btn-start-game"
+                                style="border-color: #00f0ff; color:#00f0ff">Start New Game Room</button>
+                            <button class="btn btn-primary" id="btn-draw-num"
                                 style="border-color: var(--neon-primary); color: var(--neon-primary)">Manual Number
                                 Draw</button>
                             <button class="btn btn-secondary">Toggle AI Auto-Caller</button>
@@ -122,7 +122,13 @@
         </section>
     </div>
 
-    <script>
+    <script type="module">
+        import { db, ref, set, update } from '../js/firebase-config.js';
+
+        // Admin State
+        const ROOM_ID = "global-room-1";
+
+        // UI Handling
         document.getElementById('admin-login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('admin-id').value;
@@ -132,6 +138,23 @@
                 document.getElementById('view-admin-auth').classList.add('hidden');
                 document.getElementById('view-admin-dash').classList.remove('hidden');
             }
+        });
+
+        // Firebase Admin Actions
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            // Reset the board on the server
+            set(ref(db, `rooms/${ROOM_ID}/state`), 'reset');
+            set(ref(db, `rooms/${ROOM_ID}/currentNumber`), null);
+            set(ref(db, `rooms/${ROOM_ID}/calledNumbers`), []);
+            alert("Game Room Initialized!");
+        });
+
+        document.getElementById('btn-draw-num').addEventListener('click', () => {
+            // Let's generate a random number 1-90 locally and push it
+            // Real app would let the server or cloud function calculate this
+            const randomNum = Math.floor(Math.random() * 90) + 1;
+            set(ref(db, `rooms/${ROOM_ID}/currentNumber`), randomNum);
+            alert(`Drawn Number: ${randomNum} broadcasted to all players!`);
         });
     </script>
 </body>
