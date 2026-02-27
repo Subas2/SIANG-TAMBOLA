@@ -60,6 +60,159 @@
             border-radius: 10px;
         }
 
+        /* ---- PROFILE PANEL ---- */
+        .profile-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .profile-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .profile-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            background: #1a0e40;
+            border-radius: 24px 24px 0 0;
+            z-index: 201;
+            padding: 12px 0 0;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .profile-overlay.open .profile-sheet {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .ps-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+        }
+
+        .ps-avatar {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .ps-name {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        .ps-sub {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 4px;
+            margin-bottom: 20px;
+        }
+
+        .ps-rows {
+            padding: 0 20px;
+        }
+
+        .ps-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--card2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .ps-row:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .ps-row-icon {
+            font-size: 1.2rem;
+            width: 36px;
+            text-align: center;
+        }
+
+        .ps-row-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .ps-row-arrow {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .ps-close-btn {
+            display: block;
+            margin: 8px 20px 0;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            width: calc(100% - 40px);
+            margin-bottom: 30px;
+        }
+
+        .ps-close-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* profile icon btn */
+        .profile-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .profile-icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-icon-btn svg {
+            width: 34px;
+            height: 34px;
+        }
+
         /* ---- APP SHELL ---- */
         #app {
             max-width: 480px;
@@ -660,7 +813,13 @@
             <div class="header-actions">
                 <div class="wallet-badge" id="wallet-display">💎 5,000</div>
                 <div class="icon-btn" title="Notifications">🔔</div>
-                <div class="icon-btn" title="Profile">👤</div>
+                <button class="profile-icon-btn" onclick="openProfile()" title="Profile" aria-label="Profile">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="4" stroke="#e2d9f3" stroke-width="1.8" />
+                        <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#e2d9f3" stroke-width="1.8"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
             </div>
         </header>
 
@@ -952,6 +1111,49 @@
         for (let i = 1; i <= 3; i++) renderTicket(myList, generateTicket(), i);
         for (let i = 4; i <= 8; i++) renderTicket(allList, generateTicket(), i);
 
+    </script>
+
+    <!-- ===== PROFILE PANEL ===== -->
+    <div class="profile-overlay" id="profile-overlay" onclick="closeProfile(event)">
+        <div class="profile-sheet">
+            <div class="ps-handle"></div>
+            <div class="ps-avatar">👤</div>
+            <div class="ps-name">Elite Player</div>
+            <div class="ps-sub">Player ID: ST-00123 · Guest Member</div>
+            <div class="ps-rows">
+                <div class="ps-row">
+                    <div class="ps-row-icon">👤</div>
+                    <div class="ps-row-label">My Profile</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">🎫</div>
+                    <div class="ps-row-label">My Tickets</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">📊</div>
+                    <div class="ps-row-label">My Analysis</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">💎</div>
+                    <div class="ps-row-label">Wallet – 5,000 Credits</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">🆘</div>
+                    <div class="ps-row-label">Help & Support</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+            </div>
+            <button class="ps-close-btn" onclick="closeProfile(null)">Close</button>
+        </div>
+    </div>
+
+    <script>
+        window.openProfile = function () { document.getElementById('profile-overlay').classList.add('open'); };
+        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) document.getElementById('profile-overlay').classList.remove('open'); };
     </script>
 </body>
 

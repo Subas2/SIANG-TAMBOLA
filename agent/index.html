@@ -58,6 +58,158 @@
             border-radius: 10px;
         }
 
+        /* ---- PROFILE PANEL ---- */
+        .profile-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .profile-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .profile-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            background: #12091f;
+            border-radius: 24px 24px 0 0;
+            z-index: 201;
+            padding: 12px 0 0;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 2px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .profile-overlay.open .profile-sheet {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .ps-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+        }
+
+        .ps-avatar {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--ag), var(--neon));
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .ps-name {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        .ps-sub {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 4px;
+            margin-bottom: 20px;
+        }
+
+        .ps-rows {
+            padding: 0 20px;
+        }
+
+        .ps-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--card2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .ps-row:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .ps-row-icon {
+            font-size: 1.2rem;
+            width: 36px;
+            text-align: center;
+        }
+
+        .ps-row-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .ps-row-arrow {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .ps-logout-btn {
+            display: block;
+            margin: 8px 20px;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            background: rgba(245, 158, 11, 0.08);
+            color: var(--ag);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            width: calc(100% - 40px);
+            text-align: center;
+            transition: all 0.2s;
+            margin-bottom: 30px;
+        }
+
+        .ps-logout-btn:hover {
+            background: rgba(245, 158, 11, 0.18);
+        }
+
+        .profile-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .profile-icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-icon-btn svg {
+            width: 32px;
+            height: 32px;
+        }
+
         #app {
             max-width: 480px;
             margin: 0 auto;
@@ -786,9 +938,15 @@
                     Agent Hub <div class="live-dot"></div>
                     <span class="agent-badge">AGENT</span>
                 </div>
-                <div style="display:flex;gap:8px;">
+                <div style="display:flex;gap:8px;align-items:center;">
                     <div class="icon-btn">🔔</div>
-                    <button class="logout-pill" onclick="location.reload()">Logout</button>
+                    <button class="profile-icon-btn" onclick="openProfile()" title="Agent Profile">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="8" r="4" stroke="#e2d9f3" stroke-width="1.8" />
+                            <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#e2d9f3" stroke-width="1.8"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
                 </div>
             </header>
 
@@ -1127,6 +1285,49 @@
             else if (platform === 'telegram') window.open('https://t.me/share/url?url=' + encodeURIComponent('https://subas2.github.io/SIANG-TAMBOLA/') + '&text=' + encodeURIComponent(msg));
             else { navigator.clipboard?.writeText(msg).catch(() => { }); alert('✅ Link copied!'); }
         };
+    </script>
+
+    <!-- ===== AGENT PROFILE PANEL ===== -->
+    <div class="profile-overlay" id="profile-overlay" onclick="closeProfile(event)">
+        <div class="profile-sheet">
+            <div class="ps-handle"></div>
+            <div class="ps-avatar">🤝</div>
+            <div class="ps-name">Agent Rahul</div>
+            <div class="ps-sub">ID: AGT-ST-0042 · Elite Agent 🏆 · 8% Commission</div>
+            <div class="ps-rows">
+                <div class="ps-row">
+                    <div class="ps-row-icon">💰</div>
+                    <div class="ps-row-label">Commission Balance – ₹12,800</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">🔗</div>
+                    <div class="ps-row-label">My Referral Code – AGT0042</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">👥</div>
+                    <div class="ps-row-label">My Players (128)</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">⚙️</div>
+                    <div class="ps-row-label">Account Settings</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-row-icon">🏦</div>
+                    <div class="ps-row-label">Bank / UPI Details</div>
+                    <div class="ps-row-arrow">›</div>
+                </div>
+            </div>
+            <button class="ps-logout-btn" onclick="location.reload()">🚪 Logout from Agent Hub</button>
+        </div>
+    </div>
+
+    <script>
+        window.openProfile = function () { document.getElementById('profile-overlay').classList.add('open'); };
+        window.closeProfile = function (e) { if (!e || e.target === document.getElementById('profile-overlay')) document.getElementById('profile-overlay').classList.remove('open'); };
     </script>
 </body>
 
